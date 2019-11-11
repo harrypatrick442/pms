@@ -1,0 +1,19 @@
+{
+  "name": "pms",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/harrypatrick442/pms.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/harrypatrick442/pms/issues"
+  },
+  "homepage": "https://github.com/harrypatrick442/pms#readme"
+}
