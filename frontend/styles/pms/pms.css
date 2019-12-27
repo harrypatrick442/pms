@@ -2,7 +2,7 @@
 	position:fixed;
 	right:30px;
 	height:35px;
-	width:170px;
+	width:220px;
 	bottom:30px;
 	box-sizing:border-box;
 	display:none;
@@ -226,3 +226,66 @@
 	z-index:2;
 }
 .pms .entries .pms-entry .multimedia-entry  .content-area .image.visible{ display:block;}
+
+
+.pms-opens{
+	position:fixed;
+	left:10px;
+	bottom:30px;
+	right:260px;
+	height:1px;
+	background-color:red;
+	display:none;
+}
+.pms-opens.visible{
+	display:block;
+}
+
+.pms-opens .pm{
+	height:100%;
+	width:200px;
+	position:relative;
+    bottom: 0px;
+	float:left;
+	margin-right:10px;
+}
+.pms-opens .pm.expanded{
+	height:250px;
+    bottom: 250px;
+}
+
+.pms-opens .pm .inner {
+	border-radius:4px;
+	border: 2px solid rgb(197, 68, 62);
+    background-color: rgb(238, 238,238);
+	box-sizing:border-box;
+	width:100%;
+	position:absolute;
+	bottom:0px;
+}
+.pms-opens .pm .inner .tab {
+	width:100%;
+	height:35px;
+	border-bottom:2px solid rgb(215, 215,215);
+	overflow:hidden;
+	cursor:pointer;
+}
+.pms-opens .pm .inner .tab  .multimedia-entry{
+	height:33px;
+    width: 33px;
+}
+
+.pms-opens .pm .inner .tab .multimedia-entry .content-area{
+	position:relative;
+}
+.pms-opens .pm .inner .tab  .multimedia-entry .content-area,
+.pms-opens .pm .inner .tab  .multimedia-entry .content-area .thumbnail,
+.pms-opens .pm .inner .tab  .multimedia-entry .content-area .default{
+	height:100%;
+    width: 100%;
+	left:0px;
+}
+.pms-opens .pm .inner .tab  .multimedia-entry .content-area .thumbnail,
+.pms-opens .pm .inner .tab  .multimedia-entry .content-area .default{
+	position:absolute;
+}
