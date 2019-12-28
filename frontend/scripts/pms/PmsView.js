@@ -6,12 +6,15 @@ var PmsView = (function(){
 		var buttonClose = new Button({
 			[S.CLASS_NAME]:'close',
 			[S.METHOD_NAME_CLICK]: S.HIDE,
-			[S.MODEL]:model
+			[S.MODEL]:model,
+			[S.IMAGE_SEMANTIC]:S.PMS_CLOSE_ICON,
+			[S.IMAGE_SEMANTIC_HOVER]:S.PMS_CLOSE_ICON_HOVER
 		});
 		var element = E.DIV();
-		var popup = new Popup({[S.ELEMENT]:element, [S.PROPERTY_NAME_VISIBLE]:S.VISIBLE, [S.MODEL]:model});
 		element.classList.add('pms');
-		element.appendChild(buttonClose[S.GET_ELEMENT]());
+		var inner = E.DIV();
+		inner.classList.add('inner');
+		var popup = new Popup({[S.ELEMENT]:inner, [S.PROPERTY_NAME_VISIBLE]:S.VISIBLE, [S.MODEL]:model});
 		ResizeManager[S.ADD]({
 			[S.ELEMENT]:document.documentElement,
 			[S.ON_RESIZED]:onResize,
@@ -41,18 +44,84 @@ var PmsView = (function(){
 		var imageUnexpandedNumberBoxElement = imageUnexpandedNumberBox[S.GET_ELEMENT]();
 		imageUnexpandedNumberBoxElement.appendChild(textNumberBox[S.GET_ELEMENT]());
 		buttonUnexpandedElement.appendChild(imageUnexpandedNumberBoxElement);
+		
+		
+		
+		
+		
+		
 		var buttonExpandedHeading = new Button({
 			[S.CLASS_NAME]:'expanded-heading',
 			[S.METHOD_NAME_CLICK]: S.CLICKED_EXPANDED_HEADING,
 			[S.MODEL]:model,
 			[S.PROPERTY_NAME_VISIBLE]:S.EXPANDED
 		});
+		var spanExpandedHeadingChat = E.SPAN();
+		spanExpandedHeadingChat.innerHTML='Chat';
+		var textBlockExpandedHeadingOnline = new TextBlock({
+			[S.PROPERTY_NAME]:S.ONLINE_TEXT,
+			[S.MODEL]:model
+		});
+		var buttonExpandedHeadingElement = buttonExpandedHeading[S.GET_ELEMENT]();
+		buttonExpandedHeadingElement.appendChild(spanExpandedHeadingChat);
+		buttonExpandedHeadingElement.appendChild(textBlockExpandedHeadingOnline[S.GET_ELEMENT]());
+		
+		var panelSearch = new Panel({[S.CLASS_NAME]:'search', [S.MODEL]:model, [S.PROPERTY_NAME_VISIBLE]:S.EXPANDED});
+		var panelSearchElement = panelSearch[S.GET_ELEMENT]();
+		var imageControlSearch = new ImageControl({[S.SEMANTIC]:S.PMS_SEARCH_ICON});
+		var textWrapperSearch = E.DIV();
+		textWrapperSearch.classList.add('text');
+		var textBoxSearch = new TextBox({[S.MODEL]:model, [S.PLACEHOLDER]:'Search', [S.PROPERTY_NAME]:S.SEARCH_TEXT});
+		panelSearchElement.appendChild(imageControlSearch[S.GET_ELEMENT]());
+		textWrapperSearch.appendChild(textBoxSearch[S.GET_ELEMENT]());
+		panelSearchElement.appendChild(textWrapperSearch);
 		var panelHeadingNarrow = new Panel({[S.CLASS_NAME]:'heading-narrow', [S.PROPERTY_NAME_VISIBLE]:S.NARROW, [S.MODEL]:model});
 		var headingNarrow = panelHeadingNarrow[S.GET_ELEMENT]();
+		var headingNarrowChat = E.DIV();
+		headingNarrowChat.innerHTML='Chat';
+		headingNarrowChat.classList.add('chat');
+		var textBlockNarrow = new TextBlock({
+			[S.CLASS_NAME]:'online',
+			[S.MODEL]:model,
+			[S.PROPERTY_NAME]:S.ONLINE_TEXT_BRACKETED
+		});
+		headingNarrow.appendChild(headingNarrowChat);
+		headingNarrowChat.appendChild(textBlockNarrow[S.GET_ELEMENT]());
 		headingNarrow.appendChild(buttonClose[S.GET_ELEMENT]());
-		element.appendChild(headingNarrow);
-		element.appendChild(buttonExpandedHeading[S.GET_ELEMENT]());
-		element.appendChild(buttonUnexpanded[S.GET_ELEMENT]());
+		var panelEntries = new Panel({ [S.PROPERTY_NAME_VISIBLE]:S.ENTRIES_VISIBLE, [S.MODEL]:model});
+		var entriesElement = panelEntries[S.GET_ELEMENT]();
+		entriesElement.classList.add('entries');
+		var orderedItemsEntries = new OrderedItems({
+			[S.PROPERTY_NAME_ITEMS]:S.ENTRIES,
+			[S.MODEL]:model,
+			[S.ELEMENT]:entriesElement,
+			[S.CREATE_VIEW]:function(viewModel){
+				return new PmsEntryView({[S.MODEL]:viewModel});
+			}
+		});
+		var panelOpens = new Panel({ [S.PROPERTY_NAME_VISIBLE]:S.WIDE, [S.MODEL]:model});
+		var opensElement = panelOpens[S.GET_ELEMENT](); opensElement.classList.add('pms-opens');
+		var orderedItemsOpens = new OrderedItems({
+			[S.PROPERTY_NAME_ITEMS]:S.OPEN,
+			[S.MODEL]:model,
+			[S.ELEMENT]:opensElement,
+			[S.CREATE_VIEW]:function(viewModel){
+				return new PmWindowView({[S.MODEL]:viewModel});
+			}
+		});
+		
+		
+		var panelOpen = new Panel({ [S.PROPERTY_NAME_VISIBLE]:S.OPEN_VISIBLE, [S.MODEL]:model});
+		var openElement = panelOpen[S.GET_ELEMENT]();
+		  
+		document.documentElement.appendChild(opensElement);
+		inner.appendChild(headingNarrow);
+		inner.appendChild(buttonExpandedHeadingElement);
+		inner.appendChild(entriesElement);
+		inner.appendChild(openElement);
+		inner.appendChild(panelSearchElement);
+		inner.appendChild(buttonUnexpanded[S.GET_ELEMENT]());
+		element.appendChild(inner);
 		parentElement.appendChild(element);
 		var propertyBindingExpanded = PropertyBinding[S.STANDARD](this, model, S.EXPANDED, expandedChanged);
 		var propertyBindingVisible = PropertyBinding[S.STANDARD](this, model, S.VISIBLE, visibleChanged);
@@ -71,7 +140,6 @@ var PmsView = (function(){
 			else element.classList.remove('expanded');
 		}
 		function visibleChanged(value){
-			console.log(value);
 			if(value)element.classList.add('visible');
 			else element.classList.remove('visible');
 		}
@@ -95,6 +163,9 @@ var PmsView = (function(){
 			var viewportDimensions = getViewportDimensions();
 			var width = viewportDimensions[0];
 			setDisplayMode(width>500?PmsDisplayModes.WIDE:PmsDisplayModes.NARROW);
+		}
+		function getOpensWidth(){
+			return opensElement.offsetWidth;
 		}
 	};
 })();

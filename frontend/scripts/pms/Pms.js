@@ -2,23 +2,23 @@ var Pms = function(params){
 	var bindingsHandler = BindingsHandlerBuilder(this);
 	var changed = bindingsHandler[S.CHANGED];
 	var self = this;
-	var entries = params[S.ENTRIES]?params[S.ENTRIES][S.SELECT](function(entry){return new PmsEntryViewModel(entry);})[S.TO_LIST]():[];
-	var pms = params[S.PMS]?params[S.PMS][S.SELECT](function(pm){return new PmViewModel(pm);})[S.TO_LIST]():[];
+	var entries = params[S.ENTRIES]?params[S.ENTRIES][S.SELECT](function(entry){return new Pm(entry);})[S.TO_LIST]():[];
+	var open = initializeOpen();
 	this[S.GET_ENTRIES]=function(){
 		return entries;
 	};
 	this[S.SET_ENTRIES]=function(value){
 		entries = value;
-		params[S.ENTRIES]=value[S.GET_PARAMS]();
 		changed(S.ENTRIES, value);
+		console.log(value);
 	};
-	this[S.GET_PMS]=function(){
-		return pms;
+	this[S.GET_OPEN]=function(){
+		return open;
 	};
-	this[S.SET_PMS]=function(value){
-		pms = value;
-		params[S.PMS]=value[S.GET_PARAMS]();
-		changed(S.PMS, value);
+	this[S.SET_OPEN]=function(value){
+		open = value;
+		changed(S.OPEN, value);
+		console.log(value);
 	};
 	this[S.GET_VISIBLE]=function(){
 		return params[S.VISIBLE];
@@ -31,6 +31,18 @@ var Pms = function(params){
 		return params[S.EXPANDED];
 	};
 	this[S.SET_EXPANDED]=setExpanded;
+	function initializeOpen(){
+		if(!params[S.OPEN])return [];
+		var arr=[];
+		each(params[S.OPEN], function(entry){
+			var pm = getPmByUserId(entry[S.USER_ID]);
+			if(pm)arr.push(pm);
+		});
+		return arr;
+	}
+	function getPmByUserId(userId){
+		return entries[S.WHERE](function(entry){ return entry[S.USER_ID]===userId;})[S.FIRST_OR_DEFAULT]();
+	}
 	function setExpanded(value){
 		params[S.EXPANDED]=value;
 		changed(S.EXPANDED, value);
