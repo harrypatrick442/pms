@@ -259,6 +259,7 @@
 	position:absolute;
 	bottom:0px;
 	height:35px;
+	overflow:hidden;
 }
 .pms-opens .pm-window.expanded  .pm-window-inner{
 	height:300px;
@@ -273,6 +274,7 @@
 	overflow:hidden;
 	cursor:pointer;
 	position:relative;
+    outline:none;
 }
 .pms-opens .pm-window .pm-window-inner .tab  .multimedia-entry{
 	height:33px;
@@ -333,6 +335,10 @@
     top: 36px;
     bottom: 0px;
 	width:100%;
+	display:none;
+}
+.pms-opens .pm-window.expanded .pm-window-inner .pm {
+	display:block;
 }
 .pms-opens .pm-window .pm-window-inner .pm  .pm-inner{
     height:100%;
@@ -342,18 +348,35 @@
 	position:absolute;
     height:auto;
 	top:0px;
-	bottom:40px;
+	bottom:50px;
 	width:100%;
+    background-color: #ecedf4;
 }
 .pms-opens .pm-window .pm-window-inner .pm  .pm-inner .type-box{
 	position:absolute;
     height:20px;
-	bottom:20px;
+	bottom:30px;
 	width:100%;
+	border-top:2px solid rgb(215, 215,215);
 }
-.pms-opens .pm-window .pm-window-inner .pm  .pm-inner ..menu{
-    height:20px;
+.pms-opens .pm-window .pm-window-inner .pm  .pm-inner .type-box .text-box{
+	height:100%;
+	width:100%;
+	border:0;
+}
+.pms-opens .pm-window .pm-window-inner .pm  .pm-inner .menu{
+    height:30px;
 	position:absolute;
 	bottom:0px;
 	width:100%;
+	padding:3px;
+	padding-top:3px;
+	box-sizing:border-box;
+}
+.pms-opens .pm-window .pm-window-inner .pm  .pm-inner .menu .emoticons{
+	position:relative;
+	float:right;
+	width:26px;
+	height:26px;
+	cursor:pointer;
 }
