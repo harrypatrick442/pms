@@ -46,6 +46,11 @@ var PmsViewModel = function(params){
 		updateOpenVisible();
 		updateEntriesVisible();
 	};
+	this[S.CLOSE_OPENS]=function(toCloseViewModels){
+		removeAllFromOpen(toCloseViewModels[S.SELECT](function(viewModel){
+			return viewModel[S.GET_MODEL]();
+		})[S.TO_LIST]());
+	};
 	this[S.GET_SEARCH_TEXT]=function(){
 		return searchText;
 	};
@@ -137,7 +142,7 @@ var PmsViewModel = function(params){
 			var index = opens.indexOf(entry);
 			if(index>=0)opens.splice(index, 1);
 		});
-		setOpenModels(open);
+		setOpenModels(opens);
 	}
 	function getPmByUserId(userId){
 		return getEntriesModels()[S.WHERE](function(entry){

@@ -8,6 +8,9 @@ var PmViewModel = function(params){
 	this[S.CLICKED_HEADING]=function(){
 		setExpanded(!getExpanded());
 	};
+	this[S.GET_MODEL]=function(){
+		return model;
+	};
 	this[S.DISPOSE]=function(){
 		self[S.MY_BINDINGS][S.DISPOSE]();
 	};

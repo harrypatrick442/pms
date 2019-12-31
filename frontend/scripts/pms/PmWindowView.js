@@ -46,11 +46,17 @@ var PmWindowView = (function(){
 		buttonHeadingElement.appendChild(buttonClose[S.GET_ELEMENT]());
 		inner.appendChild(buttonHeadingElement);
 		inner.appendChild(pmView[S.GET_ELEMENT]());
-		
+		this[S.GET_MODEL]=function(){return model;};
 		this[S.GET_ELEMENT]=function(){return element;};
 		this[S.DISPOSE]=function(){
 			self[S.MY_BINDINGS][S.DISPOSE]();
 			pmView[S.DISPOSE]();
+		};
+		this[S.GET_RIGHT]=function(){
+			return element.offsetLeft+element.offsetWidth;
+		};
+		this[S.GET_BOTTOM]=function(){
+			return element.offsetTop+element.offsetHeight;
 		};
 		function expandedChanged(value){
 			if(value)element.classList.add('expanded');

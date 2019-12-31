@@ -37,7 +37,7 @@ var PmView = (function(){
 			[S.CLASS_NAME]:'emoticons'
 		});
 		
-		
+		var controlsCollection = new ControlsCollection(buttonEmoticons, textBox, orderedItemsFeed, buttonClose);
 		element.appendChild(inner);
 		inner.appendChild(feed);
 		inner.appendChild(typeBox);
@@ -47,7 +47,7 @@ var PmView = (function(){
 		
 		this[S.GET_ELEMENT]=function(){return element;};
 		this[S.DISPOSE]=function(){
-			self[S.MY_BINDINGS][S.DISPOSE]();
+			controlsCollection[S.DISPOSE]();
 		};
 	};
 })();

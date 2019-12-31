@@ -1,8 +1,11 @@
 var PmsView = (function(){
 	return function(params){
+		var MAX_WIDTH_NARROW=580;
+		var self = this;
 		var model = params[S.MODEL];
 		var parentElement = params[S.ELEMENT];
 		var self = this;
+		var onceOverflowOpens = new Once(overflowOpens);
 		var buttonClose = new Button({
 			[S.CLASS_NAME]:'close',
 			[S.METHOD_NAME_CLICK]: S.HIDE,
@@ -106,6 +109,7 @@ var PmsView = (function(){
 			[S.MODEL]:model,
 			[S.ELEMENT]:opensElement,
 			[S.CREATE_VIEW]:function(viewModel){
+				scheduleOverflowOpens();
 				return new PmWindowView({[S.MODEL]:viewModel});
 			}
 		});
@@ -160,9 +164,36 @@ var PmsView = (function(){
 			propertyBindingDisplayMode[S.SET](value);
 		}
 		function onResize(){
+			console.log('on resize');
 			var viewportDimensions = getViewportDimensions();
 			var width = viewportDimensions[0];
-			setDisplayMode(width>500?PmsDisplayModes.WIDE:PmsDisplayModes.NARROW);
+			setDisplayMode(width>MAX_WIDTH_NARROW?PmsDisplayModes.WIDE:PmsDisplayModes.NARROW);
+			overflowOpens();
+		}
+		function scheduleOverflowOpens(){
+			onceOverflowOpens[S.TRIGGER]();
+		}
+		function overflowOpens(){
+			var openViews = orderedItemsOpens[S.GET_VIEWS]();
+			var len = openViews.length;
+			var width = getOpensWidth();
+			console.log(width);
+			var doRest = false;
+			var toClose = [];
+			var firstBottom;
+			for(var i=0; i<len; i++){
+				var pmWindowView = openViews[i];
+				console.log(pmWindowView[S.GET_RIGHT]());
+				console.log(pmWindowView[S.GET_BOTTOM]());
+				var bottom;
+				if(doRest || ((pmWindowView[S.GET_RIGHT]()>width||(bottom=pmWindowView[S.GET_BOTTOM]())>firstBottom)&&(doRest=true))){
+					console.log('overflowing');
+					toClose.push(pmWindowView[S.GET_MODEL]());
+				}
+				if(firstBottom===undefined)firstBottom=bottom;
+			}
+			console.log(toClose);
+			if(toClose.length>0)model[S.CLOSE_OPENS](toClose);
 		}
 		function getOpensWidth(){
 			return opensElement.offsetWidth;
