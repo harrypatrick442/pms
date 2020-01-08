@@ -1,14 +1,15 @@
 module.exports = new(function(){
 	var initialized= false;
 	var shards;
+	const Settings = require('./Settings');
 	const DalPms = require('./DalPms');
-	var shardsCreator, _settings;
+	var shardsCreator;
 	this.initialize = function(databaseConfiguration){
 		shardsCreator = shardsCreatorIn;
 		return new Promise((resolve, reject)=>{
 			if(initialized)throw new Error('Already initialized');
 			DalPms.initialize(databaseConfiguration);
-			getSettings().then((settings)=>{
+			Settings.get().then((settings)=>{
 				HostsHelper.getHostMe().then((hostMe)=>{
 					shardsCreator = hostMe.getId()===settings.getHostIdShardCreator();
 					DalPms.getShards().then((shardsIn)=>{
@@ -26,15 +27,6 @@ module.exports = new(function(){
 		return getShardForHighestUserId(userIdHighest);
 	};
 	this.getShardForHighestUserId = getShardForHighestUserId;
-	function getSettings(){
-		return new Promise((resolve, reject)=>{
-			if(_settings){resolve(_settings);return;}
-			DalPms.getSettings().then((settings)=>{
-				_settings = settings;
-				resolve(settings);
-			}).catch(reject);
-		});
-	}
 	function getShardForHighestUserId(userIdHighest){
 		return new Promise((resolve, reject)=>{
 			checkInitialized();
@@ -89,19 +81,22 @@ module.exports = new(function(){
 					userIdFromInclusive:userIdFromInclusive,
 					host:host
 				}).then((shard)=>{
-					shards.push(shard);
-					createNextShardsLifespan.doResolves(shard, userIdFromInclusive, userIdToExclusive);
-					userIdFromInclusive = userIdToExclusive;
-					if(userIdFromInclusive>createNextShardsLifespan.getUserIdHighest()){
-						createNextShardsLifespan=null;
-						return;
-					}
-					next();
-				}).catch((err)=>{
-					createNextShardsLifespan.doRejects(err);
-					createNextShardsLifespan=null;
-				});
+					DalShards.addShard(shard).then(()=>{
+						shards.push(shard);
+						createNextShardsLifespan.doResolves(shard, userIdFromInclusive, userIdToExclusive);
+						userIdFromInclusive = userIdToExclusive;
+						if(userIdFromInclusive>createNextShardsLifespan.getUserIdHighest()){
+							createNextShardsLifespan=null;
+							return;
+						}
+						next();
+					}).catch(error);
+				}).catch(error);
 			}
+			function error(err){
+				createNextShardsLifespan.doRejects(err);
+				createNextShardsLifespan=null;
+			};
 		});
 	}
 	function checkInitialized(){
