@@ -6,6 +6,7 @@ module.exports = new(function(){
 	const sql = Dal.sql;
 	const Core = require('core');
 	const S = require('strings').S;
+	const Settings = require('./Settings');
 	var dal;
 	this.initialize = function(configuration){
 		dal = new Dal(configuration);
@@ -30,9 +31,9 @@ module.exports = new(function(){
 		return new Promise((resolve, reject)=>{
 			dal.query({storedProcedure:STORED_PROCEDURE_GET_SETTINGS
 			}).then(function(result){
-				resolve(result.recordset.select((row)=>{
-					return new Shard(row);
-				}).toList());
+				var row result.recordset[0];
+				if(!row)throw new Error('No rows');
+				return Settings.fromSqlRow(row);
 			}).catch(reject);
 		});
 	};
