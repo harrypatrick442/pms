@@ -2,17 +2,22 @@ module.exports = new(function(){
 	var initialized= false;
 	var shards;
 	const DalPms = require('./DalPms');
-	var shardsCreator;
-	this.initialize = function(databaseConfiguration, shardsCreatorIn){
+	var shardsCreator, _settings;
+	this.initialize = function(databaseConfiguration){
 		shardsCreator = shardsCreatorIn;
 		return new Promise((resolve, reject)=>{
 			if(initialized)throw new Error('Already initialized');
 			DalPms.initialize(databaseConfiguration);
-			DalPms.getShards().then((shardsIn)=>{
-				console.log(shardsIn);
-				shards = shardsIn;
-				initialized = true;
-				resolve();
+			getSettings().then((settings)=>{
+				HostsHelper.getHostMe().then((hostMe)=>{
+					shardsCreator = hostMe.getId()===settings.getHostIdShardCreator();
+					DalPms.getShards().then((shardsIn)=>{
+						console.log(shardsIn);
+						shards = shardsIn;
+						initialized = true;
+						resolve();
+					}).catch(reject);
+				}).catch(reject);
 			}).catch(reject);
 		});
 	};
@@ -20,9 +25,19 @@ module.exports = new(function(){
 		var userIdHighest = userId1>userId2?userId1:userId2;
 		return getShardForHighestUserId(userIdHighest);
 	};
-	this.getShardForHighestUserId = getSsshardForHighestUserId;
+	this.getShardForHighestUserId = getShardForHighestUserId;
+	function getSettings(){
+		return new Promise((resolve, reject)=>{
+			if(_settings){resolve(_settings);return;}
+			DalPms.getSettings().then((settings)=>{
+				_settings = settings;
+				resolve(settings);
+			}).catch(reject);
+		});
+	}
 	function getShardForHighestUserId(userIdHighest){
 		return new Promise((resolve, reject)=>{
+			checkInitialized();
 			var shard = _getShardForHighestUserId(userIdHighest);
 			if(shard){
 				resolve(shard);
@@ -40,9 +55,22 @@ module.exports = new(function(){
 		}
 	}
 	function createNextShards(userIdHighest){
-		
+		checkInitialized();
+		(shardCreator?createNextShardsWithMeAsShardCreator:createNextShardsRemote)(userIdHighest);
 	}
-	function createNextShardsWithMeAsShardCreator(userIdHighest){
+	function createNextShardsRemote(userIdHighest){
+		return new Promise((resolve, reject)=>{
+			getSettings().then((settings)=>{
+			var channel = Router.getChannelForHostId(settings.getHostIdShardCreator());	
+			if(!channel)throw new Error('Could not get the channel for the shard creator');
+			TicketedSend.sendWithPromise(channel, {
+				
+			}, 10000).then((res)=>{
+				
+			}).catch(reject);
+		});
+	}
+	function createNextShardsWithMeAsShardCreator(userIdHighest){//yes im good.
 		return new Promise((resolve, reject)=>{
 			var createNextShardsCallback = new CreateNextShardsCallback(resolve, reject, userIdHighest);
 			if(createNextShardsLifespan){
@@ -76,40 +104,7 @@ module.exports = new(function(){
 			}
 		});
 	}
-	function CreateNextShardsLifespan (createNextShardsCallback, userIdHighest){
-		var list =[createNextShardsCallback];
-		this.updateHighestUserId=function(newUserIdHighest){
-			if(newUserIdHighest<=userIdHighest)return;
-			userIdHighest = newUserIdHighest;
-		};
-		this.getUserIdHighest = function(){return userIdHighest;};
-		this.add = function(createNextShardsCallback){
-			list.push(createNextShardsCallback);
-		};
-		this.doResolves = function(shard, userIdFromInclusive, userIdToExclusive){
-			var iterator = new Iterator(list);
-			while(iterator.hasNext()){
-				var createNextShardsCallback = iterator.next();
-				var userIdHighest = createNextShardsCallback.getUserIdHighest();
-				if(userIdHighest<userIdFromInclusive||userIdHighest>=userIdToExclusive)continue;
-				iterator.remove();
-				createNextShardsCallback.resolve(shard);
-			});
-		};
-		this.doRejects = function(err){
-			list.forEach((createNextShardsCallback)=>{
-				createNextShardsCallback.reject(err);
-			});
-			list = null;//be safe just incase
-		};
-	}
-	function CreateNextShardsCallback(resolve, reject, userIdHighest){
-		this.getUserIdHighest = function(){return userIdHighest;};
-		this.resolve = function(shard){
-			resolve(shard);
-		};
-		this.reject = function(err){
-			reject(err);
-		};
+	function checkInitialized(){
+		if(!initialized)throw new Error('Not initialized');
 	}
 })();
