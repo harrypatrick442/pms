@@ -1,6 +1,8 @@
 var PmViewModel = function(params){
 	var bindingsHandler = BindingsHandlerBuilder(this);
 	var self = this;
+	var getSessionId = params[S.GET_SESSION_ID];
+	var ticketedSend = params[S.TICKETED_SEND];
 	var changed = bindingsHandler[S.CHANGED];
 	var model = params[S.MODEL];
 	var width, typeBoxText= '';
@@ -36,6 +38,7 @@ var PmViewModel = function(params){
 	this[S.GET_IS_VIDEO]=function(){return false;};
 	PropertyBinding[S.CARRY_OVER](this, model, S.USERNAME, S.TITLE);
 	var _urlProvider;
+	getPms();
 	function getUrlProvider(minWidth){
 		var multimediaEntry = model[S.GET_MULTIMEDIA_ENTRY]();										
 		if(!_urlProvider&&multimediaEntry){
@@ -56,4 +59,17 @@ var PmViewModel = function(params){
 		var url =urlProvider?urlProvider[S.GET_CURRENT]():null;
 		return url;
 	};
+	function getPms(toInclusive){
+		ticketedSend[S.SEND]({
+			[S.TYPE]:S.PMS,
+			[S.PMS_TYPE]:S.GET,
+			[S.TO_INCLUSIVE]:toInclusive,
+			[S.SESSION_ID]:getSessionId(),
+			[S.USER_ID]:model[S.GET_USER_ID]()
+		}, function(res){
+			console.log(res);
+		},function(){
+			
+		});
+	}
 };

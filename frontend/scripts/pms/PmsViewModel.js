@@ -3,8 +3,10 @@ var PmsViewModel = function(params){
 	var MAX_N_ENTRIES =30;//entries listed in the pms list
 	var bindingsHandler = BindingsHandlerBuilder(this);
 	var self = this;
-	var changed = bindingsHandler[S.CHANGED];
+	var getSessionId = params[S.GET_SESSION_ID];
+	var ticketedSend = params[S.TICKETED_SEND];
 	var model = params[S.MODEL];
+	var changed = bindingsHandler[S.CHANGED];
 	var displayMode=PmsDisplayModes.WIDE;
 	var searchText='',nOnline=0;
 	var conversationVisible = false;
@@ -13,7 +15,10 @@ var PmsViewModel = function(params){
 	}, function(pmsEntryViewModel, old){
 	});
 	var propertyBindingOpen = PropertyBinding[S.CARRY_OVER_MODEL_ARRAY_AS_VIEW_MODEL_ARRAY](this, model, S.OPEN, function(model){
-		return new PmViewModel({[S.MODEL]:model});
+		return new PmViewModel({[S.MODEL]:model,
+			[S.TICKETED_SEND]:ticketedSend,
+			[S.GET_SESSION_ID]:getSessionId
+		});
 	}, function(pmsEntryViewModel, old){
 	});
 	var propertyBindingEntriesSource = propertyBindingEntries[S.GET_SOURCE]();

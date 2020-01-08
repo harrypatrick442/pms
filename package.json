@@ -4,7 +4,12 @@
 	"description": "",
 	"main": "index.js",
 	"dependencies": {
-		"repositories_helper": "^1.0.0"
+		"core": "^1.0.0",
+		"dal": "^1.0.0",
+		"hosts": "^1.0.0",
+		"log": "^1.0.0",
+		"repositories_helper": "^1.0.0",
+		"strings": "^1.0.0"
 	},
 	"devDependencies": {},
 	"scripts": {
