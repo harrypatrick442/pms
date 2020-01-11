@@ -55,7 +55,7 @@ module.exports = new(function(){
 	}
 	function createNextShards(userIdHighest){
 		checkInitialized();
-		(shardCreator?createNextShardsWithMeAsShardCreator:createNextShardsRemote)(userIdHighest);
+		return (shardCreator?createNextShardsWithMeAsShardCreator:createNextShardsRemote)(userIdHighest);
 	}
 	function createNextShardsRemote(userIdHighest){
 		return new Promise((resolve, reject)=>{
@@ -95,11 +95,11 @@ module.exports = new(function(){
 			//sendShardsUsingChannel(existingShards, channel);
 		if(localUserIdToExclusive<=userIdHighest){
 			createNextShardsWithMeAsShardCreator(userIdHighest).then((newShardForUserIdHighest)=>{
-				sendShardsUsingChannel(getShardsInRange(myNextUserIdFromInclusive, userIdHighes+1), channel);
+				sendShardsUsingChannel(getShardsInRange(myNextUserIdFromInclusive, userIdHighes+1, true), channel);
 			}).catch(error);
 			return;
 		}
-		sendShardsUsingChannel(getShardsInRange(myNextUserIdFromInclusive, userIdHighest+1), channel);
+		sendShardsUsingChannel(getShardsInRange(myNextUserIdFromInclusive, userIdHighest+1, true), channel);
 		}).catch(error);
 		function error(err){
 			channel.send({
@@ -181,14 +181,18 @@ module.exports = new(function(){
 		var latestShard = shards[shards.length-1];
 		return latestShard?latestShard.getUserIdToExclusive():1;
 	}
-	function getShardsInRange(userIdFromInclusive, userIdToExclusive){
+	function getShardsInRange(userIdFromInclusive, userIdToExclusive, errorIfNotCovered/* making shit easier to be debugged*/){
 		var iterator = new Iterator(shards);
 		var list=[];
 		while(iterator.hasNext()){
 			var shard = iterator.next();
-			if(shard.getUserIdFromInclusive()>=userIdToExclusive)break;
+			if(shard.getUserIdFromInclusive()>=userIdToExclusive){
+				break;
+			}
 			if(shard.getUserIdToExclusive()>userIdFromInclusive)list.push(shard);
 		}
+		if(errorIfNotCovered&&(list.length<1||list[0].getUserIdFromInclusive()>userIdFromInclusive||list[list.length-1].getUserIdToExclusive()<userIdToExclusive))
+			throw new Error('Range not covered');
 		return list;
 	}
 	function checkInitialized(){
