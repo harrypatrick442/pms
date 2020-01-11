@@ -11,6 +11,9 @@ function Shard(params){
 	if(!hostId)throw new Error('No hostId provied');
 	const DalPmsShard = new DalPmsShard(databaseConfiguration);
 	const Accumulator = new Accumulator();
+	this.getId=function(){
+		return params.id;
+	};
 	this.getUserIdToExclusive = function(){
 		return userIdToExclusive;
 	};
@@ -25,6 +28,15 @@ function Shard(params){
 	};
 	this.get = function(){
 		
+	};
+	this.toJSON= function(){
+		return {
+			id:params.id,
+			hostId:params.hostId,
+			userIdToExclusive:params.userIdToExclusive,
+			userIdFromInclusive:params.userIdFromInclusive,
+			databaseConfiguration:databaseConfiguration.toJSON()
+		};
 	};
 };
 Shard.fromSqlRow=function(row){
@@ -42,7 +54,16 @@ Shard.fromSqlRow=function(row){
 				});
 				resolve(new Shard(row));
 			}).catch(reject);
-			resolve(new Shard(row));
+		}).catch(reject);
+	});
+};
+Shard.fromJSON=function(obj){
+	return new Promise((resolve, reject)=>{
+		//id, hostId, created, name, password, userIdFromInclusive, userIdToExclusive,=
+			Settings.get().then((settings)=>{
+				obj.databaseConfiguration=new DatabaseConfiguration.fromJSON(obj.databaseConiguration);
+				resolve(new Shard(obj));
+			}).catch(reject);
 		}).catch(reject);
 	});
 };

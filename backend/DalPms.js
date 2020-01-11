@@ -1,5 +1,5 @@
 module.exports = new(function(){
-	const STORED_PROCEDURE_GET_SHARDS= 'pms_shards_get';,
+	const STORED_PROCEDURE_GET_SHARDS= 'pms_shards_get',
 	STORED_PROCEDURE_GET_SETTINGS='pms_settings_get',
 	STORED_PROCEDURE_ADD_SHARD='pms_shard_add';
     const Dal = require('dal');	
@@ -31,7 +31,7 @@ module.exports = new(function(){
 		return new Promise((resolve, reject)=>{
 			dal.query({storedProcedure:STORED_PROCEDURE_GET_SETTINGS
 			}).then(function(result){
-				var row result.recordset[0];
+				var row = result.recordset[0];
 				if(!row)throw new Error('No rows');
 				return Settings.fromSqlRow(row);
 			}).catch(reject);

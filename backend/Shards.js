@@ -1,10 +1,11 @@
 module.exports = new(function(){
 	var initialized= false;
 	var shards;
+	var mapIdToShard={};
 	const Settings = require('./Settings');
 	const DalPms = require('./DalPms');
 	var shardsCreator;
-	this.initialize = function(databaseConfiguration){
+	this.initialize = function(databaseConfiguration,shardsCreatorIn){
 		shardsCreator = shardsCreatorIn;
 		return new Promise((resolve, reject)=>{
 			if(initialized)throw new Error('Already initialized');
@@ -15,6 +16,12 @@ module.exports = new(function(){
 					DalPms.getShards().then((shardsIn)=>{
 						console.log(shardsIn);
 						shards = shardsIn;
+						shards.forEach((shard)=>{
+							mapIdToShard[shard.getId()]=shard;
+						});
+						if(shardsCreator){
+							Router.addMessageCallback(S.CREATE_NEXT_SHARD, createNextShardFromRemote);
+						}
 						initialized = true;
 						resolve();
 					}).catch(reject);
@@ -53,16 +60,63 @@ module.exports = new(function(){
 	function createNextShardsRemote(userIdHighest){
 		return new Promise((resolve, reject)=>{
 			getSettings().then((settings)=>{
-			var channel = Router.getChannelForHostId(settings.getHostIdShardCreator());	
-			if(!channel)throw new Error('Could not get the channel for the shard creator');
-			TicketedSend.sendWithPromise(channel, {
-				
-			}, 10000).then((res)=>{
-				
+				var channel = Router.getChannelForHostId(settings.getHostIdShardCreator());	
+				if(!channel)throw new Error('Could not get the channel for the shard creator');
+				TicketedSend.sendWithPromise(channel, {
+					type:S.CREATE_NEXT_SHARD,
+					userIdHighest:userIdHighest,
+					myNextUserIdFromInclusive:getNextShardUserIdFromInclusive()
+				}, 10000).then((res)=>{
+					if(!res.successful){
+						throw new Error('Error creating shard on remote machine: '+res.err.stack);
+					}
+					var shard;
+					res.shards.forEach((jObject)=>{
+						shard = addShardFromJObjectIfDoesntExist(jObject);
+					});
+					resolve(shard);
+				}).catch(reject);
 			}).catch(reject);
 		});
 	}
-	function createNextShardsWithMeAsShardCreator(userIdHighest){//yes im good.
+	function addShardFromJObjectIfDoesntExist(jObject){
+		var id = jObject.id;
+		if(!id)throw new Error('No id');
+		var shard = getShardById(id);
+		if(shard)return shard;
+		shard = Shard.fromJSON(res.shard);
+		addShard(shard);
+		return shard;
+	}
+	function createNextShardFromRemote(msg, channel){
+		var userIdHighest = msg.userIdHighest;
+		var myNextUserIdFromInclusive = msg.myNextUserIdFromInclusive;
+		var localUserIdToExclusive = getNextShardUserIdFromInclusive()-1;
+			//sendShardsUsingChannel(existingShards, channel);
+		if(localUserIdToExclusive<=userIdHighest){
+			createNextShardsWithMeAsShardCreator(userIdHighest).then((newShardForUserIdHighest)=>{
+				sendShardsUsingChannel(getShardsInRange(myNextUserIdFromInclusive, userIdHighes+1), channel);
+			}).catch(error);
+			return;
+		}
+		sendShardsUsingChannel(getShardsInRange(myNextUserIdFromInclusive, userIdHighest+1), channel);
+		}).catch(error);
+		function error(err){
+			channel.send({
+				msg.ticket,
+				successful:false,
+				err:err
+			});
+		}
+	}s
+	function sendShardUsingChannel(shard, channel){
+		channel.send({
+			msg.ticket,
+			successful:true,
+			shard:shard.toJSON()
+		});
+	}
+	function createNextShardsWithMeAsShardCreator(userIdHighest){//When this is called checks have already been done to see if the shard already exist.
 		return new Promise((resolve, reject)=>{
 			var createNextShardsCallback = new CreateNextShardsCallback(resolve, reject, userIdHighest);
 			if(createNextShardsLifespan){
@@ -71,8 +125,7 @@ module.exports = new(function(){
 				return;
 			}
 			createNextShardsLifespan=new CreateNextShardsLifespan(createNextShardsCallback, userIdHighest);
-			var latestShard = shards[shards.length-1];
-			var userIdFromInclusive = latestShard?latestShard.getUserIdToExclusive():1;
+			var userIdFromInclusive = getNextShardUserIdFromInclusive();
 			next();
 			function next(){
 				var userIdToExclusive = userIdFromInclusive + SHARD_SIZE
@@ -82,10 +135,12 @@ module.exports = new(function(){
 					host:host
 				}).then((shard)=>{
 					DalShards.addShard(shard).then(()=>{
-						shards.push(shard);
+						addShard(shard);
 						createNextShardsLifespan.doResolves(shard, userIdFromInclusive, userIdToExclusive);
 						userIdFromInclusive = userIdToExclusive;
 						if(userIdFromInclusive>createNextShardsLifespan.getUserIdHighest()){
+							if(createNextShardsLifespan.getNCallbacksLeft()>0)
+								throw new Error('There were somehow still callbacks left');//just going to make this easier to debug.s
 							createNextShardsLifespan=null;
 							return;
 						}
@@ -98,6 +153,43 @@ module.exports = new(function(){
 				createNextShardsLifespan=null;
 			};
 		});
+	}
+	function addShard(newShard){
+		addShard_insertIntoShardss(newShard);
+		mapIdToShard[newShard.getId()]=newShard;
+		if(shardsCreator)
+			sendToOtherClientDataHosts(newShard);
+		return newShard;
+	}
+	function sendToOtherClientDataHosts(newShard){
+		throw new Error('Not implemented');
+	}
+	function addShard_insertIntoShards(newShard){
+		var index=0;
+		do{
+			var shard = shards[index];
+			if(shard.getId()>newShard.getId()){
+				shards.splice(index, 0, newShard);
+				return;
+			}
+			index++;
+		}while(index<shards.length);
+		shards.push(newShard);
+		return newShard;
+	}
+	function getNextShardUserIdFromInclusive(){
+		var latestShard = shards[shards.length-1];
+		return latestShard?latestShard.getUserIdToExclusive():1;
+	}
+	function getShardsInRange(userIdFromInclusive, userIdToExclusive){
+		var iterator = new Iterator(shards);
+		var list=[];
+		while(iterator.hasNext()){
+			var shard = iterator.next();
+			if(shard.getUserIdFromInclusive()>=userIdToExclusive)break;
+			if(shard.getUserIdToExclusive()>userIdFromInclusive)list.push(shard);
+		}
+		return list;
 	}
 	function checkInitialized(){
 		if(!initialized)throw new Error('Not initialized');

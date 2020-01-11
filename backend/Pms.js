@@ -3,7 +3,9 @@ module.exports = new(function(){
 	const Shards = require('./Shards');
 	this.get = function(userIdFrom, userIdTo, fromInclusive, toInclusive){
 		return new Promise((resolve, reject)=>{
-			
+			Shards.getShardForUserIds(userIdFrom, userIdTo).then((shard)=>{
+				
+			}).catch(reject);
 		});
 	};
 	this.add = function(){

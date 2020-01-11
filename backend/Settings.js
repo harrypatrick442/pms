@@ -1,6 +1,7 @@
-module.exports = (function(){
+module.exports = new (function(){
 	var _settings;
-	function Settings(){
+	function Settings(params){
+		console.log(params);
 		this.getSharsUser = function(){
 			return params.shardsUser;
 		};
@@ -16,7 +17,7 @@ module.exports = (function(){
 				resolve(settings);
 			}).catch(reject);
 		});
-	});
+	};
 	this.fromSqlRow = function(row){
 		return new Settings(row);
 	};
