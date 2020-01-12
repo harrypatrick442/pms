@@ -8,6 +8,9 @@ module.exports = new (function(){
 		this.getHostIdShardCreator = function(){
 			return params.hostIdShardCreator;
 		}; 
+		this.getShardSize = function(){
+			return params.shardSize;
+		}; 
 	}
 	this.get = function(){
 		return new Promise((resolve, reject)=>{
