@@ -149,9 +149,13 @@ module.exports = new(function(){
 			}
 			createNextShardsLifespan=new CreateNextShardsLifespan(createNextShardsCallback, userIdHighest);
 			var userIdFromInclusive = getNextShardUserIdFromInclusive();
-			next();
+			var shardSize;
+			Settings.get().then((settings)=>{
+				shardSize = settings.getShardSize();
+				next();
+			}).catch(reject);
 			function next(){
-				var userIdToExclusive = userIdFromInclusive + SHARD_SIZE
+				var userIdToExclusive = userIdFromInclusive + shardSize
 				ShardBuilder.build({
 					userIdToExclusive:userIdToExclusive,
 					userIdFromInclusive:userIdFromInclusive,
