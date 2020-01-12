@@ -22,8 +22,7 @@ module.exports = new(function(){
 			if(initialized)throw new Error('Already initialized');
 			DalPms.initialize(databaseConfiguration);
 			Settings.get().then((settings)=>{
-				HostHelper.getHostMe().then((hostMe)=>{
-					console.log(ShardHostHelper);
+				HostHelper.getHostMe().then((hostMe)=>{ 
 					ShardHostHelper.get().then((shardHostsIn)=>{
 						shardHosts = shardHostsIn;
 						shardsCreator = hostMe.getId()===settings.getHostIdShardCreator();
