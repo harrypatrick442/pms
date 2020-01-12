@@ -10,6 +10,7 @@ module.exports = new(function(){
 	const Router = require('interserver_communication').Router;
 	const TicketedSend=Core.TicketedSend;
 	var shardsCreator;
+	var pmsLog = require('./PmsLog'):
 	this.initialize = function(databaseConfiguration,shardsCreatorIn){
 		shardsCreator = shardsCreatorIn;
 		return new Promise((resolve, reject)=>{
@@ -79,7 +80,7 @@ module.exports = new(function(){
 				}, 10000).then((res)=>{
 	console.log(res);
 					if(!res.successful){
-						throw new Error('Error creating shard on remote machine: '+res.err.stack);
+						throw new Error('Error creating shard on remote machine');
 					}
 					var shard;
 					res.shards.forEach((jObject)=>{
@@ -117,11 +118,10 @@ module.exports = new(function(){
 		console.log('sendShardsUsingChannel');
 		sendShardsUsingChannel(getShardsInRange(myNextUserIdFromInclusive, userIdHighest+1, true), channel);
 		function error(err){
-			console.error(err);
+			pmsLog.error(err);
 			channel.send({
 				ticket:msg.ticket,
-				successful:false,
-				err:err
+				successful:false
 			});
 		}
 	}
