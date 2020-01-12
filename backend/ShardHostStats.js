@@ -1,6 +1,7 @@
 module.exports = function(params){
 	this.getNUsers = function(){
 		return params.nUsers;
+		
 	};
 	this.getLoadHandlingFactor = function(){
 		return getShardHost().getLoadHandlingFactor();
