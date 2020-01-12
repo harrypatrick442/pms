@@ -2,9 +2,6 @@ module.exports = new (function(){
 	var _settings;
 	function Settings(params){
 		console.log(params);
-		this.getSharsUser = function(){
-			return params.shardsUser;
-		};
 		this.getHostIdShardCreator = function(){
 			return params.hostIdShardCreator;
 		}; 

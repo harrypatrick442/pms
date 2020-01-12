@@ -1,7 +1,8 @@
 module.exports = new(function(){
-	const STORED_PROCEDURE_GET_SHARDS= 'pms_shards_get',
-	STORED_PROCEDURE_GET_SETTINGS='pms_settings_get',
-	STORED_PROCEDURE_ADD_SHARD='pms_shard_add';
+	const STORED_PROCEDURE_SHARDS_GET= 'pms_shards_get',
+	STORED_PROCEDURE_SETTINGS_GET='pms_settings_get',
+	STORED_PROCEDURE_SHARD_ADD='pms_shard_add',
+	STORED_PROCEDURE_SHARD_HOSTS_GET='pms_shard_hosts_get';
     const Dal = require('dal');	
 	const sql = Dal.sql;
 	const Core = require('core');
@@ -15,7 +16,7 @@ module.exports = new(function(){
 	this.addShard = function(){
 		return new Promise((resolve, reject)=>{
 			dal.query({
-				storedProcedure:STORED_PROCEDURE_ADD_SHARD,
+				storedProcedure:STORED_PROCEDURE_SHARD_ADD,
 				parameters:[
 					{name:HOST_ID,value:shard.getHostId(), type:sql.Int},
 					{name:MULTIMEDIA,value:multimedia, type:sql.Bit},
@@ -30,7 +31,7 @@ module.exports = new(function(){
 	};
 	this.getSettings = function(){
 		return new Promise((resolve, reject)=>{
-			dal.query({storedProcedure:STORED_PROCEDURE_GET_SETTINGS
+			dal.query({storedProcedure:STORED_PROCEDURE_SETTINGS_GET
 			}).then(function(result){
 				var row = result.recordset[0];
 				if(!row)throw new Error('No rows');
@@ -38,9 +39,9 @@ module.exports = new(function(){
 			}).catch(reject);
 		});
 	};
-	this.getShards = function(title, userId){
+	this.getShards = function(){
 		return new Promise(function(resolve, reject){
-			dal.query({storedProcedure:STORED_PROCEDURE_GET_SHARDS
+			dal.query({storedProcedure:STORED_PROCEDURE_SHARDS_GET
 			}).then(function(result){
 				var iteratorRows = new Iterator(result.recordset);
 				var shards=[];
@@ -53,6 +54,27 @@ module.exports = new(function(){
 					var row = iteratorRows.next();
 					Shard.fromSqlRow(row).then((shard)=>{
 						shards.push(shard);	
+						readNextRow();
+					}).catch(reject);
+				}
+			}).catch(reject);
+		});
+	};
+	this.getShardHosts = function(){
+		return new Promise(function(resolve, reject){
+			dal.query({storedProcedure:STORED_PROCEDURE_SHARD_HOSTS_GET
+			}).then(function(result){
+				var iteratorRows = new Iterator(result.recordset);
+				var shardHosts=[];
+				readNextRow();
+				function readNextRow(){
+					if(!iteratorRows.hasNext()){
+						resolve(shardHosts);
+						return;
+					}
+					var row = iteratorRows.next();
+					ShardHost.fromSqlRow(row).then((shardHost)=>{
+						shardHosts.push(shardHosts);	
 						readNextRow();
 					}).catch(reject);
 				}

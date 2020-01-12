@@ -1,7 +1,5 @@
 module.exports = new(function(){
 	var initialized= false;
-	var shards;
-	var mapIdToShard={};
 	const Settings = require('./Settings');
 	const Core = require('core');
 	const S = require('strings').S;
@@ -9,45 +7,44 @@ module.exports = new(function(){
 	const HostHelper = require('hosts').HostHelper;
 	const Router = require('interserver_communication').Router;
 	const TicketedSend=Core.TicketedSend;
-	var shardsCreator,createNextShardsLifespan;
 	const CreateNextShardsCallback= require('./CreateNextShardsCallback');
 	const CreateNextShardsLifespan= require('./CreateNextShardsLifespan');
 	const ShardBuilder= require('./ShardBuilder');
-	
 	var pmsLog = require('./PmsLog');
-	this.initialize = function(databaseConfiguration,shardsCreatorIn){
+	var shards, shardsCreator,createNextShardsLifespan, shardHosts, mapIdToShard={};
+	this.initialize = initialize;
+	this.getShardForUserIds=getShardForUserIds;
+	this.getShardForHighestUserId = getShardForHighestUserId;
+	function initialize(databaseConfiguration,shardsCreatorIn){
 		shardsCreator = shardsCreatorIn;
 		return new Promise((resolve, reject)=>{
 			if(initialized)throw new Error('Already initialized');
 			DalPms.initialize(databaseConfiguration);
 			Settings.get().then((settings)=>{
-					console.log('hosts');
 				HostHelper.getHostMe().then((hostMe)=>{
-					
-					
-					console.log('hosts');
-					shardsCreator = hostMe.getId()===settings.getHostIdShardCreator();
-					DalPms.getShards().then((shardsIn)=>{
-						console.log(shardsIn);
-						shards = shardsIn;
-						shards.forEach((shard)=>{
-							mapIdToShard[shard.getId()]=shard;
-						});
-						if(shardsCreator){
-							Router.get().addMessageCallback(S.CREATE_NEXT_SHARD, createNextShardFromRemote);
-						}
-						initialized = true;
-						resolve();
+					DalPms.getHosts().then((shardHostsIn)=>{
+						shardHosts = shardHostsIn;
+						shardsCreator = hostMe.getId()===settings.getHostIdShardCreator();
+						DalPms.getShards().then((shardsIn)=>{
+							shards = shardsIn;
+							shards.forEach((shard)=>{
+								mapIdToShard[shard.getId()]=shard;
+							});
+							if(shardsCreator){
+								Router.get().addMessageCallback(S.CREATE_NEXT_SHARD, createNextShardFromRemote);
+							}
+							initialized = true;
+							resolve();
+						}).catch(reject);
 					}).catch(reject);
 				}).catch(reject);
 			}).catch(reject);
 		});
-	};
-	this.getShardForUserIds=function(userId1, userId2){
+	}
+	function getShardForUserIds(userId1, userId2){
 		var userIdHighest = userId1>userId2?userId1:userId2;
 		return getShardForHighestUserId(userIdHighest);
-	};
-	this.getShardForHighestUserId = getShardForHighestUserId;
+	}
 	function getShardForHighestUserId(userIdHighest){
 		return new Promise((resolve, reject)=>{
 			checkInitialized();
@@ -212,6 +209,7 @@ module.exports = new(function(){
 	function getShardsInRange(userIdFromInclusive, userIdToExclusive, errorIfNotCovered/* making shit easier to be debugged*/){
 		var iterator = new Iterator(shards);
 		var list=[];
+		
 		while(iterator.hasNext()){
 			var shard = iterator.next();
 			if(shard.getUserIdFromInclusive()>=userIdToExclusive){
@@ -225,5 +223,8 @@ module.exports = new(function(){
 	}
 	function checkInitialized(){
 		if(!initialized)throw new Error('Not initialized');
+	}
+	function pickHostForNextShard(){
+		
 	}
 })();
