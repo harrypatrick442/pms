@@ -1,9 +1,10 @@
+const HostHelper = require('hosts').HostHelper;
 const ShardHost = function(params){
 	this.getHost = function(){
 		return params.host;
 	};
 	this.getHostId = function(){
-		return params.host.getHostId();
+		return params.host.getId();
 	};
 	this.getLoadHandlingFactor = function(){
 		return params.loadHandlingFactor;

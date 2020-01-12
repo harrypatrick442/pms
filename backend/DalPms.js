@@ -77,7 +77,7 @@ module.exports = new(function(){
 					}
 					var row = iteratorRows.next();
 					ShardHost.fromSqlRow(row).then((shardHost)=>{
-						shardHosts.push(shardHosts);	
+						shardHosts.push(shardHost);	
 						readNextRow();
 					}).catch(reject);
 				}
