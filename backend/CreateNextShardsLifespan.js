@@ -16,7 +16,7 @@ module.exports = function (createNextShardsCallback, userIdHighest){
 			if(userIdHighest<userIdFromInclusive||userIdHighest>=userIdToExclusive)continue;
 			iterator.remove();
 			createNextShardsCallback.resolve(shard);
-		});
+		}
 	};
 	this.doRejects = function(err){
 		list.forEach((createNextShardsCallback)=>{

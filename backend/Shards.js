@@ -10,6 +10,9 @@ module.exports = new(function(){
 	const Router = require('interserver_communication').Router;
 	const TicketedSend=Core.TicketedSend;
 	var shardsCreator;
+	const CreateNextShardsCallback= require('./CreateNextShardsCallback');
+	const CreateNextShardsLifespan= require('./CreateNextShardsLifespan');
+	
 	var pmsLog = require('./PmsLog');
 	this.initialize = function(databaseConfiguration,shardsCreatorIn){
 		shardsCreator = shardsCreatorIn;
@@ -101,6 +104,10 @@ module.exports = new(function(){
 		return shard;
 	}
 	function createNextShardFromRemote(msg, channel){
+		if(!initialized){
+			error('Not Initialized');
+			return;
+		}
 		console.log('createNextShardFromRemote');
 		var userIdHighest = msg.userIdHighest;
 		var myNextUserIdFromInclusive = msg.myNextUserIdFromInclusive;
