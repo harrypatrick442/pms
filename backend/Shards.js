@@ -70,11 +70,8 @@ module.exports = new(function(){
 	console.log('createNextShardsRemote');
 		return new Promise((resolve, reject)=>{
 			Settings.get().then((settings)=>{
-	console.log('Settings');
 				var channel = Router.get().getChannelForHostId(settings.getHostIdShardCreator());
-	console.log('channel');	
 				if(!channel)throw new Error('Could not get the channel for the shard creator');
-	console.log('TicketedSend');
 				TicketedSend.sendWithPromise(channel, {
 					type:S.CREATE_NEXT_SHARD,
 					userIdHighest:userIdHighest,
@@ -103,17 +100,24 @@ module.exports = new(function(){
 		return shard;
 	}
 	function createNextShardFromRemote(msg, channel){
+		console.log('createNextShardFromRemote');
 		var userIdHighest = msg.userIdHighest;
 		var myNextUserIdFromInclusive = msg.myNextUserIdFromInclusive;
 		var localUserIdToExclusive = getNextShardUserIdFromInclusive()-1;
-		if(localUserIdToExclusive<=userIdHighest){
+		console.log(userIdHighest);
+		console.log(myNextUserIdFromInclusive);
+		console.log(localUserIdToExclusive);
+		if(localUserIdToExclusive<=userIdHighest){;
+		console.log('localUserIdToExclusive<=userIdHighest');
 			createNextShardsWithMeAsShardCreator(userIdHighest).then((newShardForUserIdHighest)=>{
 				sendShardsUsingChannel(getShardsInRange(myNextUserIdFromInclusive, userIdHighes+1, true), channel);
 			}).catch(error);
 			return;
 		}
+		console.log('sendShardsUsingChannel');
 		sendShardsUsingChannel(getShardsInRange(myNextUserIdFromInclusive, userIdHighest+1, true), channel);
 		function error(err){
+			console.error(err);
 			channel.send({
 				ticket:msg.ticket,
 				successful:false,
