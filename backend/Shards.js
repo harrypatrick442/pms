@@ -9,7 +9,7 @@ module.exports = new(function(){
 	const HostHelper = require('hosts').HostHelper;
 	const Router = require('interserver_communication').Router;
 	const TicketedSend=Core.TicketedSend;
-	var shardsCreator;
+	var shardsCreator,createNextShardsLifespan;
 	const CreateNextShardsCallback= require('./CreateNextShardsCallback');
 	const CreateNextShardsLifespan= require('./CreateNextShardsLifespan');
 	
