@@ -2,12 +2,14 @@ module.exports = new(function(){
 	var initialized= false;
 	const Settings = require('./Settings');
 	const Core = require('core');
+	Core.Linq;
 	const S = require('strings').S;
 	const DalPms = require('./DalPms');
 	const HostHelper = require('hosts').HostHelper;
 	const ShardHostHelper = require('./ShardHostHelper');
 	const Router = require('interserver_communication').Router;
 	const TicketedSend=Core.TicketedSend;
+	const ShardHostStats = require('./ShardHostStats');
 	const CreateNextShardsCallback= require('./CreateNextShardsCallback');
 	const CreateNextShardsLifespan= require('./CreateNextShardsLifespan');
 	const ShardBuilder= require('./ShardBuilder');
@@ -155,10 +157,11 @@ module.exports = new(function(){
 			}).catch(reject);
 			function next(){
 				var userIdToExclusive = userIdFromInclusive + shardSize
+				var shardHost = pickShardHostForNextShard();
 				ShardBuilder.build({
 					userIdToExclusive:userIdToExclusive,
 					userIdFromInclusive:userIdFromInclusive,
-					host:host
+					host:shardHost.getHost()
 				}).then((shard)=>{
 					DalShards.addShard(shard).then(()=>{
 						addShard(shard);
@@ -225,7 +228,24 @@ module.exports = new(function(){
 	function checkInitialized(){
 		if(!initialized)throw new Error('Not initialized');
 	}
-	function pickHostForNextShard(){
-		
+	function pickShardHostForNextShard(){
+		var shardHostStatss = getShardHostStatss();
+		var shardHost = shardHostStatss.orderByDesc(shardHostStats=>(shardHostStats.getNUsers()/shardHostStats.getLoadHandlingFactor())).first().getShardHost();
+		return shardHost;
+	}
+	function getShardHostStatss(){
+		var mapShardIdHostToStats =new Map();
+		shards.forEach((shard)=>{
+			var shardHostStats;
+			if(mapShardHostIdToStats.has(shard.getId())){
+				shardHostStats = mapShardHostIdToStats.get(shard);
+			}
+			else{
+				shardHostStats ={ nUsers:0, shardHost:shard.getShardHost()};
+				mapShardHostIdToStats.set(shard.getShardHost().getHostId(),shardHostStats);
+			}
+			shardHostStats.nUsers+= shard.getUserIdToExclusive()-shard.getUserIdFromInclusive();
+		});
+		return mapShardIdHostToStats.values().select(shardHostStats=>new ShardHostStats(shardHostStats)).toList();
 	}
 })();
