@@ -29,7 +29,7 @@ module.exports = new(function(){
 							mapIdToShard[shard.getId()]=shard;
 						});
 						if(shardsCreator){
-							Router.addMessageCallback(S.CREATE_NEXT_SHARD, createNextShardFromRemote);
+							Router.get().addMessageCallback(S.CREATE_NEXT_SHARD, createNextShardFromRemote);
 						}
 						initialized = true;
 						resolve();
