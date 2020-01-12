@@ -3,7 +3,12 @@ module.exports = new(function(){
 	var shards;
 	var mapIdToShard={};
 	const Settings = require('./Settings');
+	const Core = require('core');
+	const S = require('strings').S;
 	const DalPms = require('./DalPms');
+	const HostHelper = require('hosts').HostHelper;
+	const Router = require('interserver_communication').Router;
+	const TicketedSend=Core.TicketedSend;
 	var shardsCreator;
 	this.initialize = function(databaseConfiguration,shardsCreatorIn){
 		shardsCreator = shardsCreatorIn;
@@ -11,7 +16,11 @@ module.exports = new(function(){
 			if(initialized)throw new Error('Already initialized');
 			DalPms.initialize(databaseConfiguration);
 			Settings.get().then((settings)=>{
-				HostsHelper.getHostMe().then((hostMe)=>{
+					console.log('hosts');
+				HostHelper.getHostMe().then((hostMe)=>{
+					
+					
+					console.log('hosts');
 					shardsCreator = hostMe.getId()===settings.getHostIdShardCreator();
 					DalPms.getShards().then((shardsIn)=>{
 						console.log(shardsIn);
@@ -55,12 +64,12 @@ module.exports = new(function(){
 	}
 	function createNextShards(userIdHighest){
 		checkInitialized();
-		return (shardCreator?createNextShardsWithMeAsShardCreator:createNextShardsRemote)(userIdHighest);
+		return (shardsCreator?createNextShardsWithMeAsShardCreator:createNextShardsRemote)(userIdHighest);
 	}
 	function createNextShardsRemote(userIdHighest){
 		return new Promise((resolve, reject)=>{
-			getSettings().then((settings)=>{
-				var channel = Router.getChannelForHostId(settings.getHostIdShardCreator());	
+			Settings.get().then((settings)=>{
+				var channel = Router.get().getChannelForHostId(settings.getHostIdShardCreator());	
 				if(!channel)throw new Error('Could not get the channel for the shard creator');
 				TicketedSend.sendWithPromise(channel, {
 					type:S.CREATE_NEXT_SHARD,
@@ -92,7 +101,6 @@ module.exports = new(function(){
 		var userIdHighest = msg.userIdHighest;
 		var myNextUserIdFromInclusive = msg.myNextUserIdFromInclusive;
 		var localUserIdToExclusive = getNextShardUserIdFromInclusive()-1;
-			//sendShardsUsingChannel(existingShards, channel);
 		if(localUserIdToExclusive<=userIdHighest){
 			createNextShardsWithMeAsShardCreator(userIdHighest).then((newShardForUserIdHighest)=>{
 				sendShardsUsingChannel(getShardsInRange(myNextUserIdFromInclusive, userIdHighes+1, true), channel);
@@ -100,18 +108,17 @@ module.exports = new(function(){
 			return;
 		}
 		sendShardsUsingChannel(getShardsInRange(myNextUserIdFromInclusive, userIdHighest+1, true), channel);
-		}).catch(error);
 		function error(err){
 			channel.send({
-				msg.ticket,
+				ticket:msg.ticket,
 				successful:false,
 				err:err
 			});
 		}
-	}s
+	}
 	function sendShardUsingChannel(shard, channel){
 		channel.send({
-			msg.ticket,
+			ticket:msg.ticket,
 			successful:true,
 			shard:shard.toJSON()
 		});

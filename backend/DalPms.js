@@ -7,6 +7,7 @@ module.exports = new(function(){
 	const Core = require('core');
 	const S = require('strings').S;
 	const Settings = require('./Settings');
+	const Iterator = Core.Iterator;
 	var dal;
 	this.initialize = function(configuration){
 		dal = new Dal(configuration);
@@ -33,7 +34,7 @@ module.exports = new(function(){
 			}).then(function(result){
 				var row = result.recordset[0];
 				if(!row)throw new Error('No rows');
-				return Settings.fromSqlRow(row);
+				resolve(Settings.fromSqlRow(row));
 			}).catch(reject);
 		});
 	};
