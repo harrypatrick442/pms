@@ -56,7 +56,7 @@ Shard.fromSqlRow=function(row){
 				password:row.password,
 				database:row.name,
 				server:shardHost.getHost().getIp(),
-				user:shardHost.getUser();
+				user:shardHost.getUser()
 			});
 			resolve(new Shard(row));
 		}).catch(reject);
@@ -65,7 +65,7 @@ Shard.fromSqlRow=function(row){
 Shard.fromJSON=function(obj){
 	return new Promise((resolve, reject)=>{
 		//id, hostId, created, name, password, userIdFromInclusive, userIdToExclusive,=
-		SharHostHelper.getById(obj.hostId).then((shardHost)=>{
+		ShardHostHelper.getById(obj.hostId).then((shardHost)=>{
 			if(!shardHost)throw new Error('No ShardHost for this hostId');
 			obj.shardHost = shardHost;
 			obj.databaseConfiguration= DatabaseConfiguration.fromJSON(obj.databaseConiguration);

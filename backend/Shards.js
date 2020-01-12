@@ -5,6 +5,7 @@ module.exports = new(function(){
 	const S = require('strings').S;
 	const DalPms = require('./DalPms');
 	const HostHelper = require('hosts').HostHelper;
+	const ShardHostHelper = require('./ShardHostHelper');
 	const Router = require('interserver_communication').Router;
 	const TicketedSend=Core.TicketedSend;
 	const CreateNextShardsCallback= require('./CreateNextShardsCallback');
@@ -22,7 +23,8 @@ module.exports = new(function(){
 			DalPms.initialize(databaseConfiguration);
 			Settings.get().then((settings)=>{
 				HostHelper.getHostMe().then((hostMe)=>{
-					DalPms.getHosts().then((shardHostsIn)=>{
+					console.log(ShardHostHelper);
+					ShardHostHelper.get().then((shardHostsIn)=>{
 						shardHosts = shardHostsIn;
 						shardsCreator = hostMe.getId()===settings.getHostIdShardCreator();
 						DalPms.getShards().then((shardsIn)=>{

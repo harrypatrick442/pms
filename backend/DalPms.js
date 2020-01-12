@@ -7,7 +7,6 @@ module.exports = new(function(){
 	const sql = Dal.sql;
 	const Core = require('core');
 	const S = require('strings').S;
-	const Settings = require('./Settings');
 	const Iterator = Core.Iterator;
 	var dal;
 	this.initialize = function(configuration){
@@ -23,6 +22,7 @@ module.exports = new(function(){
 					{name:ACTIVE,value:active, type:sql.Bit}
 				]
 			}).then(function(result){
+				const Shard = getShardClass();
 				resolve(result.recordset.select((row)=>{
 					return new Shard(row);
 				}).toList());
@@ -35,6 +35,7 @@ module.exports = new(function(){
 			}).then(function(result){
 				var row = result.recordset[0];
 				if(!row)throw new Error('No rows');
+				const Settings = getSettingsClass();
 				resolve(Settings.fromSqlRow(row));
 			}).catch(reject);
 		});
@@ -45,6 +46,7 @@ module.exports = new(function(){
 			}).then(function(result){
 				var iteratorRows = new Iterator(result.recordset);
 				var shards=[];
+				const Shard = getShardClass();
 				readNextRow();
 				function readNextRow(){
 					if(!iteratorRows.hasNext()){
@@ -66,6 +68,7 @@ module.exports = new(function(){
 			}).then(function(result){
 				var iteratorRows = new Iterator(result.recordset);
 				var shardHosts=[];
+				const ShardHost = getShardHostClass();
 				readNextRow();
 				function readNextRow(){
 					if(!iteratorRows.hasNext()){
@@ -81,4 +84,13 @@ module.exports = new(function(){
 			}).catch(reject);
 		});
 	};
+	function getShardClass(){
+		return require('./Shard');
+	}
+	function getShardHostClass(){
+		return require('./ShardHost');
+	}
+	function getSettingsClass(){
+		return require('./Settings');
+	}
 })();
