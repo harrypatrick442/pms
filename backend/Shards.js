@@ -67,15 +67,20 @@ module.exports = new(function(){
 		return (shardsCreator?createNextShardsWithMeAsShardCreator:createNextShardsRemote)(userIdHighest);
 	}
 	function createNextShardsRemote(userIdHighest){
+	console.log('createNextShardsRemote');
 		return new Promise((resolve, reject)=>{
 			Settings.get().then((settings)=>{
-				var channel = Router.get().getChannelForHostId(settings.getHostIdShardCreator());	
+	console.log('Settings');
+				var channel = Router.get().getChannelForHostId(settings.getHostIdShardCreator());
+	console.log('channel');	
 				if(!channel)throw new Error('Could not get the channel for the shard creator');
+	console.log('TicketedSend');
 				TicketedSend.sendWithPromise(channel, {
 					type:S.CREATE_NEXT_SHARD,
 					userIdHighest:userIdHighest,
 					myNextUserIdFromInclusive:getNextShardUserIdFromInclusive()
 				}, 10000).then((res)=>{
+	console.log(res);
 					if(!res.successful){
 						throw new Error('Error creating shard on remote machine: '+res.err.stack);
 					}
