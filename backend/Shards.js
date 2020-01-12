@@ -10,7 +10,7 @@ module.exports = new(function(){
 	const Router = require('interserver_communication').Router;
 	const TicketedSend=Core.TicketedSend;
 	var shardsCreator;
-	var pmsLog = require('./PmsLog'):
+	var pmsLog = require('./PmsLog');
 	this.initialize = function(databaseConfiguration,shardsCreatorIn){
 		shardsCreator = shardsCreatorIn;
 		return new Promise((resolve, reject)=>{
