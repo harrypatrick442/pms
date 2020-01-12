@@ -1,14 +1,15 @@
 module.exports = (function(params){
-	const log = new Log({pathName:'pms/shard_builder'});
-	const PMS_SHARD=path.join(__dirname, '../database/pms_shard/programmability/',
+	const path = require('path');
+	const pmsLog = require('./PmsLog');
+	const PMS_SHARD=path.join(__dirname, '../database/pms_shard/programmability/'),
 	PMS_SHARD_STORED_PROCEDURES=PMS_SHARD+'stored_procedures/',
 	PMS_SHARD_SCALAR_FUNCTIONS=PMS_SHARD+'scalar_functions/',
-	PMS_SHARD_TABLE_VALUE_FUNCTIONS=PMS_SHARD+'table_valued_functions/', 
+	PMS_SHARD_TABLE_VALUED_FUNCTIONS=PMS_SHARD+'table_valued_functions/', 
 	PMS_SHARD_TBLPMS_TABLENAMES_GET_BY_DATE_RANGE_DESCENDING=PMS_SHARD_TABLE_VALUED_FUNCTIONS+'pms_shard_tblPms_tableNames_get_by_date_range_descending.sql',
 	PMS_SHARD_HORIZONTAL_PARTITIONS_CREATE=PMS_SHARD_STORED_PROCEDURES+'pms_shard_horizontal_partitions_create.sql',
 	PMS_SHARD_PMS_ADD_UPATE=PMS_SHARD_STORED_PROCEDURES+'pms_shard_pms_add_update.sql',
 	PMS_SHARD_PMS_GET_UPDATE=PMS_SHARD_STORED_PROCEDURES+'pms_shard_pms_get_update.sql',
-	PMS_SHARD_UPDATE =PMS_SHARD_STORED_PROCEDURE+'pms_shard_update.sql';
+	PMS_SHARD_UPDATE =PMS_SHARD_STORED_PROCEDURES+'pms_shard_update.sql';
 	const programmablePaths = [
 		PMS_SHARD_TBLPMS_TABLENAMES_GET_BY_DATE_RANGE_DESCENDING, PMS_SHARD_HORIZONTAL_PARTITIONS_CREATE, 
 		PMS_SHARD_PMS_ADD_UPATE, PMS_SHARD_PMS_GET_UPDATE, PMS_SHARD_UPDATE
@@ -31,16 +32,16 @@ module.exports = (function(params){
 			function error(err){
 				if(newDatabase){
 					DalDatabases.deleteDatabase(newDatabase).then(doReject).catch((err)=>{
-						log.error(new Error('Error deleting database '+newDatabase.getName()+' while cleaning up after creating new shard faile'));
+						pmsLog.error(new Error('Error deleting database '+newDatabase.getName()+' while cleaning up after creating new shard faile'));
 						doReject();
 					});
 					return;
 				}
 				doReject();
 				function doReject(){
-					log.error(err);
+					//pmsLog.error(err);
 					reject(err);
-				}}
+				}
 			}
 		});
 	};

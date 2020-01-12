@@ -12,6 +12,7 @@ module.exports = new(function(){
 	var shardsCreator,createNextShardsLifespan;
 	const CreateNextShardsCallback= require('./CreateNextShardsCallback');
 	const CreateNextShardsLifespan= require('./CreateNextShardsLifespan');
+	const ShardBuilder= require('./ShardBuilder');
 	
 	var pmsLog = require('./PmsLog');
 	this.initialize = function(databaseConfiguration,shardsCreatorIn){
