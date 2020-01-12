@@ -246,6 +246,6 @@ module.exports = new(function(){
 			}
 			shardHostStats.nUsers+= shard.getUserIdToExclusive()-shard.getUserIdFromInclusive();
 		});
-		return mapShardIdHostToStats.values().select(shardHostStats=>new ShardHostStats(shardHostStats)).toList();
+		return Array.from(mapShardIdHostToStats.values()).select(shardHostStats=>new ShardHostStats(shardHostStats)).toList();
 	}
 })();
