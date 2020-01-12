@@ -1,4 +1,4 @@
-module.exports = (function(params){
+module.exports = new (function(params){
 	const path = require('path');
 	const pmsLog = require('./PmsLog');
 	const PMS_SHARD=path.join(__dirname, '../database/pms_shard/programmability/'),
