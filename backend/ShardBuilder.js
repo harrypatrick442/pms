@@ -1,6 +1,7 @@
 module.exports = new (function(params){
 	const path = require('path');
 	const pmsLog = require('./PmsLog');
+	const DalDatabases = require('dal').DalDatabases;
 	const PMS_SHARD=path.join(__dirname, '../database/pms_shard/programmability/'),
 	PMS_SHARD_STORED_PROCEDURES=PMS_SHARD+'stored_procedures/',
 	PMS_SHARD_SCALAR_FUNCTIONS=PMS_SHARD+'scalar_functions/',
