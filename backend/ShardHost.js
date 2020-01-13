@@ -16,7 +16,7 @@ const ShardHost = function(params){
 	this.getPassword = function(){
 		return params.password;
 	};
-	this.getDatabaseConiguration = function(){
+	this.getDatabaseConfiguration = function(){
 		if(_databaseConfiguration)return _databaseConiguration;
 		_databaseConfiguration = new DatabaseConfiguration({
 			user:getUser(),
