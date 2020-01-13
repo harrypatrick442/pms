@@ -237,7 +237,7 @@ module.exports = new(function(){
 		var mapShardHostIdToStats =new Map();
 		shardHosts.forEach((shardHost)=>{
 			if(!mapShardHostIdToStats.has(shardHost.getHostId()))
-				mapShardHostIdToStats.set(shardHost.getHostId(), {nUsers:0, shardHost:shard.getShardHost()});
+				mapShardHostIdToStats.set(shardHost.getHostId(), {nUsers:0, shardHost:shardHost});
 		});
 		shards.forEach((shard)=>{
 			var shardHostStats;
