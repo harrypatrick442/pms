@@ -235,15 +235,13 @@ module.exports = new(function(){
 	}
 	function getShardHostStatss(){
 		var mapShardIdHostToStats =new Map();
+		shardHosts.forEach((shardHost)=>{
+			if(!mapShardHostIdToStats.has(shardHost.getHostId()))
+				mapShardHostIdToStats.set(shardHost.getHostId(), {nUsers:0, shardHost:shard.getShardHost()});
+		});
 		shards.forEach((shard)=>{
 			var shardHostStats;
-			if(mapShardHostIdToStats.has(shard.getId())){
-				shardHostStats = mapShardHostIdToStats.get(shard);
-			}
-			else{
-				shardHostStats ={ nUsers:0, shardHost:shard.getShardHost()};
-				mapShardHostIdToStats.set(shard.getShardHost().getHostId(),shardHostStats);
-			}
+			shardHostStats = mapShardHostIdToStats.get(shard);
 			shardHostStats.nUsers+= shard.getUserIdToExclusive()-shard.getUserIdFromInclusive();
 		});
 		return Array.from(mapShardIdHostToStats.values()).select(shardHostStats=>new ShardHostStats(shardHostStats)).toList();
