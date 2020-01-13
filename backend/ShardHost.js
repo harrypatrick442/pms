@@ -13,7 +13,7 @@ const ShardHost = function(params){
 	this.getUser = function(){
 		return params.user;
 	};
-	this.getPassword() = function(){
+	this.getPassword = function(){
 		return params.password;
 	};
 	this.getDatabaseConiguration = function(){
