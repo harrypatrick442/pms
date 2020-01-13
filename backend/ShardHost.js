@@ -2,7 +2,8 @@ const HostHelper = require('hosts').HostHelper;
 const DatabaseConfiguration = require('configuration').DatabaseConfiguration;
 const ShardHost = function(params){
 	var _databaseConfiguration;
-	this.getHost = function(){
+	this.getHost = getHost;
+	function getHost(){
 		return params.host;
 	};
 	this.getHostId = function(){
@@ -24,7 +25,7 @@ const ShardHost = function(params){
 		_databaseConfiguration = new DatabaseConfiguration({
 			user:getUser(),
 			password:getPassword(),
-			server:host.getIp(),
+			server:getHost().getIp(),
 			database:null
 		});
 	};
