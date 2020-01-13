@@ -1,4 +1,5 @@
 const HostHelper = require('hosts').HostHelper;
+const DatabaseConfiguration = require('configuration').DatabaseConfiguration;
 const ShardHost = function(params){
 	var _databaseConfiguration;
 	this.getHost = function(){
