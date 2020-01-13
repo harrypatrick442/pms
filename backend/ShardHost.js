@@ -11,10 +11,12 @@ const ShardHost = function(params){
 	this.getLoadHandlingFactor = function(){
 		return params.loadHandlingFactor;
 	};
-	this.getUser = function(){
+	this.getUser = getUser;
+	function getUser(){
 		return params.user;
 	};
-	this.getPassword = function(){
+	this.getPassword= getPassword;
+	function getPassword(){
 		return params.password;
 	};
 	this.getDatabaseConfiguration = function(){
