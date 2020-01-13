@@ -1,5 +1,6 @@
 const HostHelper = require('hosts').HostHelper;
 const ShardHost = function(params){
+	var _databaseConfiguration;
 	this.getHost = function(){
 		return params.host;
 	};
@@ -11,6 +12,18 @@ const ShardHost = function(params){
 	};
 	this.getUser = function(){
 		return params.user;
+	};
+	this.getPassword() = function(){
+		return params.password;
+	};
+	this.getDatabaseConiguration = function(){
+		if(_databaseConfiguration)return _databaseConiguration;
+		_databaseConfiguration = new DatabaseConfiguration({
+			user:getUser(),
+			password:getPassword(),
+			server:host.getIp(),
+			database:null
+		});
 	};
 };
 ShardHost.fromSqlRow = function(row){

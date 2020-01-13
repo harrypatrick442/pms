@@ -14,14 +14,24 @@ module.exports = new (function(params){
 		PMS_SHARD_TBLPMS_TABLENAMES_GET_BY_DATE_RANGE_DESCENDING, PMS_SHARD_HORIZONTAL_PARTITIONS_CREATE, 
 		PMS_SHARD_PMS_ADD_UPATE, PMS_SHARD_PMS_GET_UPDATE, PMS_SHARD_UPDATE
 	];
-	this.build = function(){
+	this.build = function(params){
+		const userIdFromInclusive = params.userIdFromInclusive;
+		if(!userIdFromInclusive)throw new Error('No userIdFromInclusive provided');
+		const userIdToExclusive = params.userIdToExclusive;
+		if(!userIdToExclusive)throw new Error('No userIdToExclusive provided');
+		const shardHost = params.shardHost;
+		if(!shardHost)throw new Error('No host provided');
+		const name = 'pms_'+userIdFromInclusive+'_'+userIdToExclusive;
 		return new Promise((resolve, reject)=>{
-			var newDatabase;
-			createDatabase(host, name).then((database)=>{
-				newDatabase = database;
+			var newDatabaseConfiguration;
+			createDatabase(shardHost.getDatabaseConfiguration(), name).then((newDatabaseConfigurationIn)=>{
+				newDatabaseConfiguration = newDatabaseConfigurationIn;
 				populateDatabaseWithProgrammabes().then(()=>{
 					var shard = new Shard({
-						
+						userIdFromInclusive:userIdFromInclusive,
+						userIdToExclusive:userIdToExclusive,
+						databaseConfiguration:newDatabaseConfiguration,
+						shardHost:shardHost
 					});
 					shard.update().then(()=>{
 						resolve(shard);
@@ -30,9 +40,9 @@ module.exports = new (function(params){
 			}).catch(error);
 			
 			function error(err){
-				if(newDatabase){
-					DalDatabases.deleteDatabase(newDatabase).then(doReject).catch((err)=>{
-						pmsLog.error(new Error('Error deleting database '+newDatabase.getName()+' while cleaning up after creating new shard faile'));
+				if(newDatabaseConfiguration){
+					DalDatabases.deleteDatabase(newDatabaseConfiguration).then(doReject).catch((err)=>{
+						pmsLog.error(new Error('Error deleting database '+newDatabaseConfiguration.getDatabase()+' while cleaning up after creating new shard faile'));
 						doReject();
 					});
 					return;
@@ -45,8 +55,8 @@ module.exports = new (function(params){
 			}
 		});
 	};
-	function createDatabase(host, name){
-		return DalDatabases.createDatabase(host, name);
+	function createDatabase(currentDatabaseConfiguration, name){
+		return DalDatabases.createDatabase(currentDatabaseConfiguration, name);
 	}
 	function populateDatabaseWithProgrammables(){
 		return new Promimse((resolve, reject)=>{

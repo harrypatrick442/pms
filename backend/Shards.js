@@ -161,7 +161,7 @@ module.exports = new(function(){
 				ShardBuilder.build({
 					userIdToExclusive:userIdToExclusive,
 					userIdFromInclusive:userIdFromInclusive,
-					host:shardHost.getHost()
+					shardHost:shardHost
 				}).then((shard)=>{
 					DalShards.addShard(shard).then(()=>{
 						addShard(shard);
