@@ -40,6 +40,11 @@ function Shard(params){
 			databaseConfiguration:databaseConfiguration.toJSON()
 		};
 	};
+	this.update = function(){
+		return new Promise((resolve, reject)=>{
+			resolve();
+		});
+	};
 	function getHostId(){
 		return shardHost.getHostId();
 	}
