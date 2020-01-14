@@ -13,7 +13,6 @@ module.exports = new(function(){
 	const CreateNextShardsCallback= require('./CreateNextShardsCallback');
 	const CreateNextShardsLifespan= require('./CreateNextShardsLifespan');
 	const PmsShardBuilder= require('./PmsShardBuilder');
-	const DalShards= require('./DalShards');s
 	var PmsLog = require('./PmsLog');
 	var shards, shardsCreator,createNextShardsLifespan, shardHosts, mapIdToShard={};
 	this.initialize = initialize;
@@ -173,7 +172,7 @@ module.exports = new(function(){
 					userIdFromInclusive:userIdFromInclusive,
 					shardHost:shardHost
 				}).then((shard)=>{
-					DalShards.addShard(shard).then(()=>{
+					DalPms.addShard(shard).then(()=>{
 						addShard(shard);
 						createNextShardsLifespan.doResolves(shard, userIdFromInclusive, userIdToExclusive);
 						userIdFromInclusive = userIdToExclusive;
