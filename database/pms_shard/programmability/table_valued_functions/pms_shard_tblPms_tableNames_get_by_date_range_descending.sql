@@ -3,5 +3,5 @@ RETURNS Table
 AS
 RETURN
 (
-select tableName from tblHorizontalPartitions where tblHorizontalPartitions.dateFrom >= @dateFromInclusive and tblHorizontalPartitions.dateFrom<@dateToExclusive
+select tableName from tblHorizontalPartitions where tblHorizontalPartitions.from >= @dateFromInclusive and tblHorizontalPartitions.from<@dateToExclusive
 )
