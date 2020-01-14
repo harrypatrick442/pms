@@ -19,6 +19,17 @@ module.exports = new (function(params){
 		PMS_SHARD_TBLPMS_TABLENAMES_GET_BY_DATE_RANGE_DESCENDING, PMS_SHARD_HORIZONTAL_PARTITIONS_CREATE, 
 		PMS_SHARD_PMS_ADD_UPATE, PMS_SHARD_PMS_GET_UPDATE, PMS_SHARD_UPDATE
 	];
+	const tblHorizontalPartitions= new Table({
+		name:'tblHorizontalPartitions',
+		columns:[
+			new TableColumn({name:'id', type:TableColumnTypes.INT, primaryKey:true, nullable:false}),
+			new TableColumn({name:'from', type:TableColumnTypes.DATETIME, nullable:false}),
+			new TableColumn({name:'tableName', type:TableColumnTypes.VARCHAR, length:50, nullable:false}),
+			new TableColumn({name:'parentId', type:TableColumnTypes.INT, length:50, nullable:true}),
+			new TableColumn({name:'createdAt', type:TableColumnTypes.DATETIME, length:50, nullable:false})
+		]
+	});
+	const tables =[tblHorizontalPartitions];
 	this.build = function(params){
 		const userIdFromInclusive = params.userIdFromInclusive;
 		if(!userIdFromInclusive)throw new Error('No userIdFromInclusive provided');
@@ -28,6 +39,7 @@ module.exports = new (function(params){
 			shardHost : params.shardHost,
 			name : 'pms_'+userIdFromInclusive+'_'+userIdToExclusive,
 			programmablePaths:programmablePaths,
+			tables:tables;
 			createShard:(databaseConfiguration, shardHost)=>{return createShard(databaseConfiguration, shardHost, userIdFromInclusive, userIdToExclusive);}
 		});
 	};
