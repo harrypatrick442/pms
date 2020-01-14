@@ -22,6 +22,9 @@ function Shard(params){
 	this.getUserIdFromInclusive = function(){
 		return userIdFromInclusive;
 	};
+	this.getName = function(){
+		return databaseConfiguration.getName();
+	};
 	this.getHostId = getHostId;
 	this.getShardHost=function(){
 		return shardHost;
