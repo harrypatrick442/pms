@@ -142,11 +142,11 @@ module.exports = new(function(){
 			});
 		}
 	}
-	function sendShardUsingChannel(shard, channel){
+	function sendShardsUsingChannel(shards, channel){
 		channel.send({
 			ticket:msg.ticket,
 			successful:true,
-			shard:shard.toJSON()
+			shard:shards.select(shard=>shard.toJSON()).toList()
 		});
 	}
 	function createNextShardsWithMeAsShardCreator(userIdHighest){//When this is called checks have already been done to see if the shard already exist.
