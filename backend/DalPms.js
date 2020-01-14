@@ -9,23 +9,22 @@ module.exports = new(function(){
 	const S = require('strings').S;
 	const Iterator = Core.Iterator;
 	var dal;
+	const HOST_ID='hostId', NAME='name', USER_ID_FROM_INCLUSIVE='userIdFromInclusive', USER_ID_TO_EXCLUSIVE='userIdToExclusive';
 	this.initialize = function(configuration){
 		dal = new Dal(configuration);
 	};
-	this.addShard = function(){
+	this.addShard = function(shard){
 		return new Promise((resolve, reject)=>{
 			dal.query({
 				storedProcedure:STORED_PROCEDURE_SHARD_ADD,
 				parameters:[
-					{name:HOST_ID,value:shard.getHostId(), type:sql.Int},
-					{name:MULTIMEDIA,value:multimedia, type:sql.Bit},
-					{name:ACTIVE,value:active, type:sql.Bit}
+						{name:HOST_ID, value:shard.getHostId(),type:sql.Int},
+						{name:NAME, value:shard.getName(),type:sql.Varchar(128)},
+						{name:USER_ID_FROM_INCLUSIVE, value:shard.getUserIdFromInclusive(), type:sql.Int},
+						{name:USER_ID_TO_EXCLUSIVE, value:shard.getUserIdToExclusive(), type:sql.Int}
 				]
 			}).then(function(result){
-				const Shard = getShardClass();
-				resolve(result.recordset.select((row)=>{
-					return new Shard(row);
-				}).toList());
+				resolve(shard);
 			}).catch(reject);
 		});
 	};

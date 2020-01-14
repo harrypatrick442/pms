@@ -23,7 +23,7 @@ module.exports = new (function(params){
 	const tblHorizontalPartitions= new Table({
 		name:'tblHorizontalPartitions',
 		columns:[
-			new TableColumn({name:'id', type:TableColumnTypes.INT, primaryKey:true, nullable:false}),
+			new TableColumn({name:'id', type:TableColumnTypes.INT, primaryKey:true, nullable:false, autoIncrement:true}),
 			new TableColumn({name:'from', type:TableColumnTypes.DATETIME, nullable:false}),
 			new TableColumn({name:'tableName', type:TableColumnTypes.VARCHAR, length:50, nullable:false}),
 			new TableColumn({name:'parentId', type:TableColumnTypes.INT, nullable:true}),
