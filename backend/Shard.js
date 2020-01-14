@@ -2,6 +2,7 @@ const Accumulator = require('./Accumulator');
 const Settings = require('./Settings');
 const ShardHostHelper = require('./ShardHostHelper');
 const DalPmsShard = require('./DalPmsShard');
+const DatabaseConfiguration= require('configuration').DatabaseConfiguration;
 function Shard(params){
 	const userIdToExclusive = params.userIdToExclusive;
 	const userIdFromInclusive = params.userIdFromInclusive;
