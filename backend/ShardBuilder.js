@@ -61,7 +61,7 @@ module.exports = new (function(params){
 		return DalDatabases.createDatabase(currentDatabaseConfiguration, name);
 	}
 	function populateDatabaseWithProgrammables(){
-		return new Promimse((resolve, reject)=>{
+		return new Promise((resolve, reject)=>{
 			getProgrammables().then((programmables)=>{
 				var iterator = new Iterator(programmables);
 				nextProgrammable();
