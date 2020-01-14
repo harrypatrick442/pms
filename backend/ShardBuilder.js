@@ -25,6 +25,8 @@ module.exports = new (function(params){
 		const name = 'pms_'+userIdFromInclusive+'_'+userIdToExclusive;
 		return new Promise((resolve, reject)=>{
 			var newDatabaseConfiguration;
+			console.log(shardHost.getDatabaseConfiguration().toJSON());
+			return;
 			createDatabase(shardHost.getDatabaseConfiguration(), name).then((newDatabaseConfigurationIn)=>{
 				newDatabaseConfiguration = newDatabaseConfigurationIn;
 				populateDatabaseWithProgrammabes().then(()=>{
