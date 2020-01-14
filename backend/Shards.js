@@ -193,7 +193,7 @@ module.exports = new(function(){
 		});
 	}
 	function addShard(newShard){
-		addShard_insertIntoShardss(newShard);
+		addShard_insertIntoShards(newShard);
 		mapIdToShard[newShard.getId()]=newShard;
 		if(shardsCreator)
 			sendToOtherClientDataHosts(newShard);
