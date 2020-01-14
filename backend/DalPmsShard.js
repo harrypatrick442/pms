@@ -1,9 +1,9 @@
-module.exports = sfunction(configuration){
-	const STORED_PROCEDURE_ADD= 'pms_shard_pms_add';
-    const Dal = require('dal');	
-	const sql = Dal.sql;
-	const Core = require('core');
-	const S = require('strings').S;
+const STORED_PROCEDURE_ADD= 'pms_shard_pms_add';
+const Dal = require('dal');	
+const sql = Dal.sql;
+const Core = require('core');
+const S = require('strings').S;
+module.exports = function(configuration){
 	const dal = new Dal(configuration);
 	this.add = function(){
 		return new Promise(function(resolve, reject){
