@@ -13,10 +13,19 @@ module.exports = new(function(){
 	const CreateNextShardsCallback= require('./CreateNextShardsCallback');
 	const CreateNextShardsLifespan= require('./CreateNextShardsLifespan');
 	const ShardBuilder= require('./ShardBuilder');
-	var pmsLog = require('./PmsLog');
+	var PmsLog = require('./PmsLog');
 	var shards, shardsCreator,createNextShardsLifespan, shardHosts, mapIdToShard={};
 	this.initialize = initialize;
-	this.getShardForUserIds=getShardForUserIds;
+	this.getShardForUserIds=function(userId1, userId2){
+		return new Promise((resolve, reject)=>{
+			getShardForUserIds(userId1, userId2).then((shard)=>{
+				resolve(shard);
+			}).catch((err)=>{
+				PmsLog.error(err);
+				reject(err);
+			});
+		});
+	};
 	this.getShardForHighestUserId = getShardForHighestUserId;
 	function initialize(databaseConfiguration,shardsCreatorIn){
 		shardsCreator = shardsCreatorIn;
@@ -126,7 +135,7 @@ module.exports = new(function(){
 		console.log('sendShardsUsingChannel');
 		sendShardsUsingChannel(getShardsInRange(myNextUserIdFromInclusive, userIdHighest+1, true), channel);
 		function error(err){
-			pmsLog.error(err);
+			PmsLog.error(err);
 			channel.send({
 				ticket:msg.ticket,
 				successful:false

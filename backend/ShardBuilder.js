@@ -1,6 +1,6 @@
 module.exports = new (function(params){
 	const path = require('path');
-	const pmsLog = require('./PmsLog');
+	const PmsLog = require('./PmsLog');
 	const DalDatabases = require('dal').DalDatabases;
 	const PMS_SHARD=path.join(__dirname, '../database/pms_shard/programmability/'),
 	PMS_SHARD_STORED_PROCEDURES=PMS_SHARD+'stored_procedures/',
@@ -44,7 +44,7 @@ module.exports = new (function(params){
 			function error(err){
 				if(newDatabaseConfiguration){
 					DalDatabases.deleteDatabase(newDatabaseConfiguration).then(doReject).catch((err)=>{
-						pmsLog.error(new Error('Error deleting database '+newDatabaseConfiguration.getDatabase()+' while cleaning up after creating new shard faile'));
+						PmsLog.error(new Error('Error deleting database '+newDatabaseConfiguration.getDatabase()+' while cleaning up after creating new shard faile'));
 						doReject();
 					});
 					return;
