@@ -25,7 +25,7 @@ module.exports = new (function(params){
 		const userIdToExclusive = params.userIdToExclusive;
 		if(!userIdToExclusive)throw new Error('No userIdToExclusive provided');
 		return ShardBuilder.build({ 
-			shardHost = params.shardHost,
+			shardHost : params.shardHost,
 			name : 'pms_'+userIdFromInclusive+'_'+userIdToExclusive,
 			programmablePaths:programmablePaths,
 			createShard:(databaseConfiguration, shardHost)=>{return createShard(databaseConfiguration, shardHost, userIdFromInclusive, userIdToExclusive);}
