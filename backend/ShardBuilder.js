@@ -28,7 +28,7 @@ module.exports = new (function(params){
 			console.log(shardHost.getDatabaseConfiguration().toJSON());
 			createDatabase(shardHost.getDatabaseConfiguration(), name).then((newDatabaseConfigurationIn)=>{
 				newDatabaseConfiguration = newDatabaseConfigurationIn;
-				populateDatabaseWithProgrammabes().then(()=>{
+				populateDatabaseWithProgrammables().then(()=>{
 					var shard = new Shard({
 						userIdFromInclusive:userIdFromInclusive,
 						userIdToExclusive:userIdToExclusive,
@@ -71,7 +71,7 @@ module.exports = new (function(params){
 						return;
 					}
 					var programmable = iterator.next();
-					populateDatabaseWithProgrammable(programmable).then(nextProgrammable).catch(reject);
+					populateDatabaseWithProgrammables(programmable).then(nextProgrammable).catch(reject);
 				}
 			}).catch(reject);
 		});
