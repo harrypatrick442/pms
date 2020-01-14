@@ -58,7 +58,7 @@ Shard.fromSqlRow=function(row){
 		//id, hostId, created, name, userIdFromInclusive, userIdToExclusive,
 		var hostId = row.hostId;
 		if(!hostId)throw new Error('No hostId');
-		SharHostHelper.getById(hostId).then((shardHost)=>{
+		ShardHostHelper.getById(hostId).then((shardHost)=>{
 			if(!shardHost)throw new Error('No ShardHost for this hostId');
 			row.shardHost=shardHost;
 			row.databaseConfiguration=new DatabaseConfiguration({
