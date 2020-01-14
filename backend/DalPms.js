@@ -19,7 +19,7 @@ module.exports = new(function(){
 				storedProcedure:STORED_PROCEDURE_SHARD_ADD,
 				parameters:[
 						{name:HOST_ID, value:shard.getHostId(),type:sql.Int},
-						{name:NAME, value:shard.getName(),type:sql.Varchar(128)},
+						{name:NAME, value:shard.getName(),type:sql.VarChar(128)},
 						{name:USER_ID_FROM_INCLUSIVE, value:shard.getUserIdFromInclusive(), type:sql.Int},
 						{name:USER_ID_TO_EXCLUSIVE, value:shard.getUserIdToExclusive(), type:sql.Int}
 				]
