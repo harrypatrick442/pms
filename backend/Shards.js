@@ -2,6 +2,7 @@ module.exports = new(function(){
 	var initialized= false;
 	const Settings = require('./Settings');
 	const Core = require('core');
+	const Iterator = Core.Iterator;
 	Core.Linq;
 	const S = require('strings').S;
 	const DalPms = require('./DalPms');
