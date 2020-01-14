@@ -6,6 +6,7 @@ module.exports = new (function(params){
 	console.log(TableColumnTypes);
 	const Core = require('core');
 	const Iterator = Core.Iterator;
+	const Shard= require('./Shard');
 	const PMS_SHARD=path.join(__dirname, '../database/pms_shard/programmability/'),
 	PMS_SHARD_STORED_PROCEDURES=PMS_SHARD+'stored_procedures/',
 	PMS_SHARD_SCALAR_FUNCTIONS=PMS_SHARD+'scalar_functions/',
