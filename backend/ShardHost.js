@@ -28,6 +28,7 @@ const ShardHost = function(params){
 			server:getHost().getIp(),
 			database:null
 		});
+		return _databaseConfiguration;
 	};
 };
 ShardHost.fromSqlRow = function(row){
