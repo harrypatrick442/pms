@@ -12,7 +12,7 @@ module.exports = new(function(){
 	const ShardHostStats = require('./ShardHostStats');
 	const CreateNextShardsCallback= require('./CreateNextShardsCallback');
 	const CreateNextShardsLifespan= require('./CreateNextShardsLifespan');
-	const ShardBuilder= require('./ShardBuilder');
+	const PmsShardBuilder= require('./PmsShardBuilder');
 	var PmsLog = require('./PmsLog');
 	var shards, shardsCreator,createNextShardsLifespan, shardHosts, mapIdToShard={};
 	this.initialize = initialize;
@@ -167,7 +167,7 @@ module.exports = new(function(){
 			function next(){
 				var userIdToExclusive = userIdFromInclusive + shardSize
 				var shardHost = pickShardHostForNextShard();
-				ShardBuilder.build({
+				PmsShardBuilder.build({
 					userIdToExclusive:userIdToExclusive,
 					userIdFromInclusive:userIdFromInclusive,
 					shardHost:shardHost
