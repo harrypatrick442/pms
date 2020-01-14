@@ -1,4 +1,4 @@
-module.exports = new(function(coniguration){
+module.exports = sfunction(configuration){
 	const STORED_PROCEDURE_ADD= 'pms_shard_pms_add';
     const Dal = require('dal');	
 	const sql = Dal.sql;
@@ -27,4 +27,4 @@ module.exports = new(function(coniguration){
 			}).catch(reject);
 		});
 	};
-})();
+};

@@ -11,7 +11,7 @@ function Shard(params){
 	if(!userIdFromInclusive)throw new Error('No userIdFromInclusive provied');
 	if(!userIdToExclusive)throw new Error('No userIdToExclusive provied');
 	if(!databaseConfiguration)throw new Error('No databaseConfiguration provied');
-	const DalPmsShard = new DalPmsShard(databaseConfiguration);
+	const dalPmsShard = new DalPmsShard(databaseConfiguration);
 	const Accumulator = new Accumulator();
 	this.getId=function(){
 		return params.id;
