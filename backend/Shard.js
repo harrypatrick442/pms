@@ -23,7 +23,7 @@ function Shard(params){
 		return userIdFromInclusive;
 	};
 	this.getName = function(){
-		return databaseConfiguration.getName();
+		return databaseConfiguration.getDatabase();
 	};
 	this.getHostId = getHostId;
 	this.getShardHost=function(){
