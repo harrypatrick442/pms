@@ -26,7 +26,6 @@ module.exports = new (function(params){
 		return new Promise((resolve, reject)=>{
 			var newDatabaseConfiguration;
 			console.log(shardHost.getDatabaseConfiguration().toJSON());
-			return;
 			createDatabase(shardHost.getDatabaseConfiguration(), name).then((newDatabaseConfigurationIn)=>{
 				newDatabaseConfiguration = newDatabaseConfigurationIn;
 				populateDatabaseWithProgrammabes().then(()=>{

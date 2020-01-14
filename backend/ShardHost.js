@@ -36,7 +36,7 @@ ShardHost.fromSqlRow = function(row){
 		var hostId = row.hostId;
 		HostHelper.getById(hostId).then((host)=>{
 			if(!host)throw new Error('ShardHost with hostId '+hostId+' had no actual Host counterpart');
-			resolve(new ShardHost({host:host, loadHandlingFactor:row.loadHandlingFactor, user:row.user}));
+			resolve(new ShardHost({host:host, loadHandlingFactor:row.loadHandlingFactor, user:row.user, password:row.password}));
 		}).catch(reject);
 	});
 };
