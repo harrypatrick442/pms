@@ -2,8 +2,8 @@ module.exports = new (function(params){
 	const path = require('path');
 	const PmsLog = require('./PmsLog');
 	const Dal = require('dal');
-	const DalDatabases = Dal.DalDatabases;
-	const ShardBuilder = Dal.ShardBuilder;
+	const {DalDatabases, ShardBuilder, Table, TableColumn, TableColumnTypes} = Dal;
+	console.log(TableColumnTypes);
 	const Core = require('core');
 	const Iterator = Core.Iterator;
 	const PMS_SHARD=path.join(__dirname, '../database/pms_shard/programmability/'),
@@ -39,7 +39,7 @@ module.exports = new (function(params){
 			shardHost : params.shardHost,
 			name : 'pms_'+userIdFromInclusive+'_'+userIdToExclusive,
 			programmablePaths:programmablePaths,
-			tables:tables;
+			tables:tables,
 			createShard:(databaseConfiguration, shardHost)=>{return createShard(databaseConfiguration, shardHost, userIdFromInclusive, userIdToExclusive);}
 		});
 	};
