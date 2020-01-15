@@ -20,7 +20,8 @@ module.exports = new(function(){
 	this.initialize = initialize;
 	this.getShardForUserIds=function(userId1, userId2){
 		return new Promise((resolve, reject)=>{
-			userId2 =18001;
+			userId1 = parseInt(userId1);
+			userId2 = parseInt(userId2);
 			getShardForUserIds(userId1, userId2).then((shard)=>{
 				resolve(shard);
 			}).catch((err)=>{
@@ -57,6 +58,8 @@ module.exports = new(function(){
 		});
 	}
 	function getShardForUserIds(userId1, userId2){
+		userId1 = parseInt(userId1);
+		userId2 = parseInt(userId2);
 		var userIdHighest = userId1>userId2?userId1:userId2;
 		return getShardForHighestUserId(userIdHighest);
 	}
