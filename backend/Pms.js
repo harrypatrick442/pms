@@ -28,11 +28,13 @@ module.exports = new(function(){
 			}).catch(reject);
 		});
 	};
-	this.add = function(){
+	this.add = function(message, userIdFrom, userIdTo){
 		return new Promise((resolve, reject)=>{
 			checkInitialized();
+			
 			Shards.getShardForUserIds(userIdFrom, userIdTo).then((shard)=>{
 				console.log(shard.toJSON());
+				resolve();
 			}).catch(reject);
 		});
 	};

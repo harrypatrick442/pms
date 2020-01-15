@@ -28,7 +28,8 @@ var PmView = (function(){
 			[S.CLASS_NAME]:'text-box',
 			[S.MODEL]:model,
 			[S.PROPERTY_NAME]:S.TYPE_BOX_TEXT,
-			[S.METHOD_NAME_ON_ENTER]:S.ON_ENTER
+			[S.METHOD_NAME_ON_ENTER]:S.ON_ENTER,
+			[S.PROPERTY_NAME_DISABLED]:S.TYPE_BOX_DISABLED
 		});
 		var buttonEmoticons = new Button({
 			[S.MODEL]:model,

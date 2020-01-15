@@ -17,7 +17,16 @@ module.exports = new(function(){
 				});
 			break
 			case S.ADD:
-				Pms.add({userIdFrom:userIdFrom, userIdTo:req[S.USER_ID_TO], sentAt:getTime(), content:req[S.CONTENT]});
+				console.log(req);
+				var userIdTo = req[S.USER_ID];
+				Pms.add({[S.USER_ID_FROM]:userIdFrom, [S.USER_ID_TO]:userIdTo, [S.SENT_AT]:getTime(), [S.CONTENT]:req[S.CONTENT]}, userIdFrom, userIdTo)
+				.then(()=>{
+					callback({[S.TICKET]:req[S.TICKET], [S.SUCCESSFUL]:true });
+				})
+				.catch((err)=>{
+					PmsLog.error(err);
+					callback({[S.TICKET]:req[S.TICKET], [S.SUCCESSFUL]:false});
+				});
 			break;
 		}
 	};

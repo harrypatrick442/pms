@@ -1,11 +1,12 @@
 var PmViewModel = function(params){
+	var TIMEOUT_SEND_ADD =5000;
 	var bindingsHandler = BindingsHandlerBuilder(this);
 	var self = this;
 	var getSessionId = params[S.GET_SESSION_ID];
 	var ticketedSend = params[S.TICKETED_SEND];
 	var changed = bindingsHandler[S.CHANGED];
 	var model = params[S.MODEL];
-	var width, typeBoxText= '';
+	var width, typeBoxText= '', typeBoxDisabled=false;
 	var propertyBindingExpanded = PropertyBinding[S.CARRY_OVER]( this, model, S.EXPANDED);
 	this[S.CLICKED_HEADING]=function(){
 		setExpanded(!getExpanded());
@@ -28,21 +29,35 @@ var PmViewModel = function(params){
 	this[S.GET_MESSAGES]=function(){
 		return [];
 	};
-	this[S.GET_TYPE_BOX_TEXT]=function(){
-		return typeBoxText;
-	};
-	this[S.SET_TYPE_BOX_TEXT]=setTextBoxTetx;
-	function setTextBoxText(value){
-		typeBoxText = value;
-		changed(S.TYPE_BOX_TEXT, value);
+	this[S.GET_TYPE_BOX_TEXT]=getTypeBoxText;
+	this[S.SET_TYPE_BOX_TEXT]=setTypeBoxText;
+	this[S.GET_TYPE_BOX_DISABLED]=function(){
+		return typeBoxDisabled;
 	};
 	this[S.GET_IS_VIDEO]=function(){return false;};
 	this[S.ON_ENTER]=function(){
-		console.log('on enter');
+		setTypeBoxDisabled(true);
+		addPm(getTypeBoxText()).then(function(){
+			setTypeBoxText('');
+			setTypeBoxDisabled(false);
+		}).catch(function(){
+			setTypeBoxDisabled(false);
+		});
 	};
 	PropertyBinding[S.CARRY_OVER](this, model, S.USERNAME, S.TITLE);
 	var _urlProvider;
 	getPms();
+	function setTypeBoxText(value){
+		typeBoxText = value;
+		changed(S.TYPE_BOX_TEXT, value);
+	}
+	function getTypeBoxText(){
+		return typeBoxText;
+	}
+	function setTypeBoxDisabled(value){
+		typeBoxDisabled = value;
+		changed(S.TYPE_BOX_DISABLED, value);
+	}
 	function getUrlProvider(minWidth){
 		var multimediaEntry = model[S.GET_MULTIMEDIA_ENTRY]();										
 		if(!_urlProvider&&multimediaEntry){
@@ -76,7 +91,16 @@ var PmViewModel = function(params){
 			
 		});
 	}
-	function addPm(){
-		
+	function addPm(content){
+		return new Promise(function(resolve, reject){
+			console.log(content);
+			ticketedSend[S.SEND]({
+				[S.TYPE]:S.PMS,
+				[S.PMS_TYPE]:S.ADD,
+				[S.CONTENT]:content,
+				[S.SESSION_ID]:getSessionId(),
+				[S.USER_ID]:model[S.GET_USER_ID]()
+			},resolve,reject, TIMEOUT_SEND_ADD);
+		});
 	}
 };

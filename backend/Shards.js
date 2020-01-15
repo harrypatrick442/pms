@@ -18,10 +18,9 @@ module.exports = new(function(){
 	const PmsLog = require('./PmsLog');
 	var shards, shardsCreator, sendToDevices, createNextShardsLifespan, shardHosts, mapIdToShard=new Map();
 	this.initialize = initialize;
-	this.getShardForUserIds=function(userId1, userId2){
+	this.getShardForUserIds=function(userId1In, userId2In){
 		return new Promise((resolve, reject)=>{
-			userId1 = parseInt(userId1);
-			userId2 = parseInt(userId2);
+			var {userId1, userId2 }=parseUserIds(userId1In, userId2In);
 			getShardForUserIds(userId1, userId2).then((shard)=>{
 				resolve(shard);
 			}).catch((err)=>{
@@ -31,6 +30,13 @@ module.exports = new(function(){
 		});
 	};
 	this.getShardForHighestUserId = getShardForHighestUserId;
+	function parseUserIds(userId1, userId2){
+		userId1Parsed = parseInt(userId1);
+		userId2Parsed = parseInt(userId2);
+		if(isNaN(userId1Parsed))throw new Error('Invalid user id '+userId1);
+		if(isNaN(userId2Parsed))throw new Error('Invalid user id '+userId2);
+		return {userId1:userId1Parsed, userId2:userId2Parsed};
+	}
 	function initialize(params){
 		return new Promise((resolve, reject)=>{
 			if(initialized)throw new Error('Already initialized');
@@ -61,8 +67,6 @@ module.exports = new(function(){
 		});
 	}
 	function getShardForUserIds(userId1, userId2){
-		userId1 = parseInt(userId1);
-		userId2 = parseInt(userId2);
 		var userIdHighest = userId1>userId2?userId1:userId2;
 		return getShardForHighestUserId(userIdHighest);
 	}
