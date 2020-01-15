@@ -20,7 +20,7 @@ module.exports = new(function(){
 	this.initialize = initialize;
 	this.getShardForUserIds=function(userId1, userId2){
 		return new Promise((resolve, reject)=>{
-			userId2 = 90000;
+			userId2 = 4000;
 			getShardForUserIds(userId1, userId2).then((shard)=>{
 				resolve(shard);
 			}).catch((err)=>{
@@ -72,7 +72,10 @@ module.exports = new(function(){
 		});
 	}
 	function _getShardForHighestUserId(userIdHighest){
-		for(var i=0, shard; shard= shards[i]; i++){
+		var shard;
+		for(var i=0; shard= shards[i]; i++){
+			console.log('rom is');
+			console.log(shard.getUserIdFromInclusive());
 			if(shard.getUserIdToExclusive()>userIdHighest&&shard.getUserIdFromInclusive()<=userIdHighest)
 			{
 				return shard;
@@ -185,6 +188,10 @@ module.exports = new(function(){
 				shardSize = settings.getShardSize();
 				next();
 			}).catch(reject);
+			if(userIdFromInclusive+(shardSize*settings.getMaxNShardsCreateAtOnce())<=userIdHighest){
+				error(new Error('Trying  to create too many shards at once. Might be someone doing it on purpose'));
+				return;
+			}
 			function next(){
 				var userIdToExclusive = userIdFromInclusive + shardSize
 				var shardHost = pickShardHostForNextShard();

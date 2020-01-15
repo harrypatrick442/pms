@@ -8,6 +8,9 @@ module.exports = new (function(){
 		this.getShardSize = function(){
 			return params.shardSize;
 		}; 
+		this.getMaxNShardsCreateAtOnce=function(){
+			return params.maxNShardsCreateAtOnce;
+		};
 	}
 	this.get = function(){
 		return new Promise((resolve, reject)=>{
