@@ -13,6 +13,7 @@ module.exports = new(function(){
 			initializing=true;
 			Shards.initialize(params).then(()=>{
 				users = params.users;
+				UsersRouter.addMessageCallback(S.PMS, incomingPms);
 				initialized = true;
 				initializing=false;
 				resolve();
@@ -39,9 +40,8 @@ module.exports = new(function(){
 			sendToDevices_mapUserIdToMessage(mapUserIdToMessages, message[S.USER_ID_FROM], message);
 			sendToDevices_mapUserIdToMessage(mapUserIdToMessages, message[S.USER_ID_TO], message);
 		});
-		var usersRouter = UsersRouter;
 		mapUserIdToMessages.forEach((messages, userId)=>{
-			userRouter.sendToServersWith(userId, {[S.TYPE]:S.PMS, [S.MESSAGES]:messages});
+			UsersRouter.sendToServersWith(userId, {[S.TYPE]:S.PMS, [S.USER_ID]:userId, [S.MESSAGES]:messages});
 		});
 	}
 	function sendToDevices_mapUserIdToMessage(mapUserIdToMessages, userId, message){
@@ -49,5 +49,10 @@ module.exports = new(function(){
 			mapUserIdToMessages.set(userId,[message]);
 		else 
 			mapUserIdToMessages.get(userId).push(message);
+	}
+	function incomingPms(msg, channel){
+		var userId = msg[S.USER_ID];
+		var user = users.getById(userId);
+		user.getDevices().sendMessage(msg);
 	}
 })();
