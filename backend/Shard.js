@@ -8,12 +8,20 @@ function Shard(params){
 	const userIdFromInclusive = params.userIdFromInclusive;
 	const databaseConfiguration = params.databaseConfiguration;
 	const shardHost = params.shardHost;
+	const settings = params.settings;
+	const sendToDevices = params.sendToDevices;
 	if(!shardHost)throw new Error('No shardHost');
 	if(!userIdFromInclusive)throw new Error('No userIdFromInclusive provied');
 	if(!userIdToExclusive)throw new Error('No userIdToExclusive provied');
 	if(!databaseConfiguration)throw new Error('No databaseConfiguration provied');
+	if(!settings)throw new Error('No settings provied');
+	if(!sendToDevices)throw new Error('No sendToDevices provied');
 	const dalPmsShard = new DalPmsShard(databaseConfiguration);
-	const accumultor = new Accumulator();
+	const accumultor = new Accumulator({
+		settings:settings,
+		dalPmsShard:dalPmsShard,
+		sendToDevices:sendToDevices
+	});
 	this.setId = function(value){
 		if(params.id)throw new Error('id already set');
 		params.id = value;
@@ -35,7 +43,7 @@ function Shard(params){
 		return shardHost;
 	};
 	this.add = function(){
-		pmsAccumulator.add();
+		accumulator.add();
 	};
 	this.get = function(){
 		
@@ -56,32 +64,40 @@ function Shard(params){
 		return shardHost.getHostId();
 	}
 };
-Shard.fromSqlRow=function(row){
+Shard.fromSqlRow=function(row, sendToDevice){
 	return new Promise((resolve, reject)=>{
 		//id, hostId, created, name, userIdFromInclusive, userIdToExclusive,
 		var hostId = row.hostId;
 		if(!hostId)throw new Error('No hostId');
 		ShardHostHelper.getById(hostId).then((shardHost)=>{
 			if(!shardHost)throw new Error('No ShardHost for this hostId');
-			row.shardHost=shardHost;
-			row.databaseConfiguration=new DatabaseConfiguration({
-				database:row.name,
-				server:shardHost.getHost().getIp(),
-				user:shardHost.getUser(),
-				password:shardHost.getPassword()
-			});
-			resolve(new Shard(row));
+			Settings.get().then((settings)=>{
+				row.shardHost=shardHost;
+				row.databaseConfiguration=new DatabaseConfiguration({
+					database:row.name,
+					server:shardHost.getHost().getIp(),
+					user:shardHost.getUser(),
+					password:shardHost.getPassword()
+				});
+				row.sendToDevice = sendToDevice;
+				row.settings = settings;
+				resolve(new Shard(row));
+			}).catch(reject);
 		}).catch(reject);
 	});
 };
-Shard.fromJSON=function(obj){
+Shard.fromJSON=function(obj, sendToDevice){
 	return new Promise((resolve, reject)=>{
 		//id, hostId, created, name, userIdFromInclusive, userIdToExclusive,=
 		ShardHostHelper.getById(obj.hostId).then((shardHost)=>{
 			if(!shardHost)throw new Error('No ShardHost for this hostId');
-			obj.shardHost = shardHost;
-			obj.databaseConfiguration= DatabaseConfiguration.fromJSON(obj.databaseConfiguration);
-			resolve(new Shard(obj));
+			Settings.get().then((settings)=>{
+				obj.shardHost = shardHost;
+				obj.sendToDevice = sendToDevice;
+				obj.settings = settings;
+				obj.databaseConfiguration= DatabaseConfiguration.fromJSON(obj.databaseConfiguration);
+				resolve(new Shard(obj));
+			}).catch(reject);
 		}).catch(reject);
 	});
 };

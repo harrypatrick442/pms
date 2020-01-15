@@ -41,13 +41,15 @@ module.exports = new(function(){
 					ShardHostHelper.get().then((shardHostsIn)=>{
 						shardHosts = shardHostsIn;
 						shardsCreator = hostMe.getId()===settings.getHostIdShardCreator();
-						DalPms.getShards().then((shardsIn)=>{
+						DalPms.getShards(sendToDevices).then((shardsIn)=>{
 							shards = shardsIn;
 							shards.forEach((shard)=>{
 								mapIdToShard.set(shard.getId(),shard);
 							});
 							if(shardsCreator){
-								Router.get().addMessageCallback(S.CREATE_NEXT_SHARD, createNextShardFromRemote);
+								var router = Router.get();
+								router.addMessageCallback(S.CREATE_NEXT_SHARD, createNextShardFromRemote);
+								router.addMessageCallback(S.NEW_SHARD, newShardFromRemote);
 							}
 							initialized = true;
 							resolve();
@@ -135,11 +137,25 @@ module.exports = new(function(){
 				resolve(shard);
 				return;
 			};
-			Shard.fromJSON(jObject).then((shard)=>{
-			addShard(shard);
-			resolve(shard);
+			Shard.fromJSON(jObject, sendToDevices).then((shard)=>{
+				addShard(shard);
+				resolve(shard);
 			}).catch(reject);
 		});
+	}
+	function sendToDevices(messages){
+		var mapUserIdToMessages = new Map();
+		messages.forEach((message)=>{
+			sendToDevices_mapUserIdToMessage(mapUserIdToMessages, message[S.USER_ID_FROM], message);
+			sendToDevices_mapUserIdToMessage(mapUserIdToMessages, message[S.USER_ID_TO], message);
+		});
+		
+	}
+	function sendToDevices_mapUserIdToMessage(mapUserIdToMessages, userId, message){
+		if(!mapUserIdToMessages.has())
+			mapUserIdToMessages.set(userId,[message]);
+		else 
+			mapUserIdToMessages.get(userId).push(message);
 	}
 	function createNextShardFromRemote(msg, channel){
 		console.log('hi');
@@ -165,6 +181,16 @@ module.exports = new(function(){
 				ticket:msg.ticket,
 				successful:false
 			});
+		}
+	}
+	function newShardFromRemote(msg, channel){
+		if(!initialized){
+			error('Not Initialized');
+			return;
+		}
+		addShardFromJObjectIfDoesntExist(msg.shard).then(()=>{}).catch(error);
+		function error(err){
+			PmsLog.error(err);
 		}
 	}
 	function sendShardsUsingChannel(shards, channel, ticket){

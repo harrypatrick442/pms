@@ -41,7 +41,7 @@ module.exports = new(function(){
 			}).catch(reject);
 		});
 	};
-	this.getShards = function(){
+	this.getShards = function(sendToDevices){
 		return new Promise(function(resolve, reject){
 			dal.query({storedProcedure:STORED_PROCEDURE_SHARDS_GET
 			}).then(function(result){
@@ -55,7 +55,7 @@ module.exports = new(function(){
 						return;
 					}
 					var row = iteratorRows.next();
-					Shard.fromSqlRow(row).then((shard)=>{
+					Shard.fromSqlRow(row, sendToDevices).then((shard)=>{
 						shards.push(shard);	
 						readNextRow();
 					}).catch(reject);
