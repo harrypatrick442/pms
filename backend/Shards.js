@@ -20,7 +20,7 @@ module.exports = new(function(){
 	this.initialize = initialize;
 	this.getShardForUserIds=function(userId1, userId2){
 		return new Promise((resolve, reject)=>{
-			userId2 = 9001;
+			userId2 =18001;
 			getShardForUserIds(userId1, userId2).then((shard)=>{
 				resolve(shard);
 			}).catch((err)=>{
@@ -87,7 +87,6 @@ module.exports = new(function(){
 		return (shardsCreator?createNextShardsWithMeAsShardCreator:createNextShardsRemote)(userIdHighest);
 	}
 	function createNextShardsRemote(userIdHighest){
-	console.log('createNextShardsRemote');
 		return new Promise((resolve, reject)=>{
 			Settings.get().then((settings)=>{
 				var channel = Router.get().getChannelForHostId(settings.getHostIdShardCreator());
@@ -97,9 +96,10 @@ module.exports = new(function(){
 					userIdHighest:userIdHighest,
 					myNextUserIdFromInclusive:getNextShardUserIdFromInclusive()
 				}, 10000).then((res)=>{
-	console.log(res);
+					console.log(res);
 					if(!res.successful){
 						throw new Error('Error creating shard on remote machine');
+						return;
 					}
 					addShardsFromJObjectsIfDontExist(res.shards).then(resolve).catch(reject);
 				}).catch(reject);
