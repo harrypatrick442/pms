@@ -122,15 +122,13 @@ module.exports = new(function(){
 	function addShardFromJObjectIfDoesntExist(jObject){
 		return new Promise((resolve, reject)=>{
 			var id = jObject.id;
-			console.log(jObject);
-			if(!id)return;
-			throw new Error('No id');
+			if(!id)throw new Error('No id');
 			var shard = getShardById(id);
 			if(shard){
 				resolve(shard);
 				return;
 			};
-			Shard.fromJSON(res.shard).then((shard)=>{
+			Shard.fromJSON(jObject).then((shard)=>{
 			addShard(shard);
 			resolve(shard);
 			}).catch(reject);
