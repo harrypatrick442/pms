@@ -15,7 +15,7 @@ module.exports = new(function(){
 	const CreateNextShardsLifespan= require('./CreateNextShardsLifespan');
 	const PmsShardBuilder= require('./PmsShardBuilder');
 	var PmsLog = require('./PmsLog');
-	var shards, shardsCreator,createNextShardsLifespan, shardHosts, mapIdToShard={};
+	var shards, shardsCreator,createNextShardsLifespan, shardHosts, mapIdToShard=new Map();
 	this.initialize = initialize;
 	this.getShardForUserIds=function(userId1, userId2){
 		return new Promise((resolve, reject)=>{
@@ -41,7 +41,7 @@ module.exports = new(function(){
 						DalPms.getShards().then((shardsIn)=>{
 							shards = shardsIn;
 							shards.forEach((shard)=>{
-								mapIdToShard[shard.getId()]=shard;
+								mapIdToShard.set(shard.getId(),shard);
 							});
 							if(shardsCreator){
 								Router.get().addMessageCallback(S.CREATE_NEXT_SHARD, createNextShardFromRemote);
@@ -105,7 +105,10 @@ module.exports = new(function(){
 			}).catch(reject);
 		});
 	}
-	function addShardFromJObjectIfDoesntExist(jObject){
+	function getShardById(id){
+		return mapIdToShard.get(id);
+	}
+	function addShssardFromJObjectIfDoesntExist(jObject){
 		var id = jObject.id;
 		if(!id)throw new Error('No id');
 		var shard = getShardById(id);
@@ -142,7 +145,7 @@ module.exports = new(function(){
 	function sendShardsUsingChannel(shards, channel, ticket){
 		console.log('sending back');
 		channel.send({
-			ticket:ticket,
+			ticket:ticket,ss
 			successful:true,
 			shards:shards.select(shard=>shard.toJSON()).toList()
 		});
@@ -192,7 +195,7 @@ module.exports = new(function(){
 	}
 	function addShard(newShard){
 		addShard_insertIntoShards(newShard);
-		mapIdToShard[newShard.getId()]=newShard;
+		mapIdToShard.set(newShard.getId(),newShard);
 		if(shardsCreator)
 			sendToOtherClientDataHosts(newShard);
 		return newShard;
