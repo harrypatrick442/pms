@@ -115,7 +115,7 @@ module.exports = new(function(){
 					return;
 				}
 				var jObject = iterator.next();
-				addShardFromJObjectIfDoesntEssxist(jObject).then(next).catch(reject);
+				addShardFromJObjectIfDoesntExist(jObject).then(next).catch(reject);
 			}
 		});
 	}
@@ -145,7 +145,7 @@ module.exports = new(function(){
 		var localUserIdToExclusive = getNextShardUserIdFromInclusive()-1;
 		var ticket = msg.ticket;
 		if(localUserIdToExclusive<=userIdHighest){
-			createNextShardsWithMeAsShardCreator(userIdHighest).then((newShardForUserIdHighest)=>{
+			createNextShardsWithMeAsShardCreator(userIdHighest, channel).then((newShardForUserIdHighest)=>{
 				sendShardsUsingChannel(getShardsInRange(myNextUserIdFromInclusive, userIdHighes+1, true), channel, ticket);
 			}).catch(error);
 			return;
@@ -167,7 +167,7 @@ module.exports = new(function(){
 			shards:shards.select(shard=>shard.toJSON()).toList()
 		});
 	}
-	function createNextShardsWithMeAsShardCreator(userIdHighest){//When this is called checks have already been done to see if the shard already exist.
+	function createNextShardsWithMeAsShardCreator(userIdHighest, channel){//When this is called checks have already been done to see if the shard already exist.
 		return new Promise((resolve, reject)=>{
 			var createNextShardsCallback = new CreateNextShardsCallback(resolve, reject, userIdHighest);
 			if(createNextShardsLifespan){
@@ -192,6 +192,8 @@ module.exports = new(function(){
 				}).then((shard)=>{
 					DalPms.addShard(shard).then(()=>{
 						addShard(shard);
+						if(shardsCreator)
+							sendToOtherClientDataHosts(newShard, channel);
 						createNextShardsLifespan.doResolves(shard, userIdFromInclusive, userIdToExclusive);
 						userIdFromInclusive = userIdToExclusive;
 						if(userIdFromInclusive>createNextShardsLifespan.getUserIdHighest()){
@@ -213,12 +215,18 @@ module.exports = new(function(){
 	function addShard(newShard){
 		addShard_insertIntoShards(newShard);
 		mapIdToShard.set(newShard.getId(),newShard);
-		if(shardsCreator)
-			sendToOtherClientDataHosts(newShard);
 		return newShard;
 	}
-	function sendToOtherClientDataHosts(newShard){
-		throw new Error('Not implemented');
+	function sendToOtherClientDataHosts(newShard, channelToSkip){
+		var msg = {
+			type:S.NEW_SHARD,
+			shard:newShard
+		};
+		shardHosts.forEach((shardHost)=>{
+			var channel = Router.get().getChannelForHostId(shardHost.getHostId());
+			if(!channel===channelToSkip)
+				try{channel.send(msg);}catch(ex){console.error(ex);}//This is not critical and put this here just to be safe. It doesn't particularly matter if this fails, cos it will simply get the shard when it next request creation.		
+		});
 	}
 	function addShard_insertIntoShards(newShard){
 		var index=0;
