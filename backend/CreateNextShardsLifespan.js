@@ -6,6 +6,9 @@ module.exports = function (createNextShardsCallback, userIdHighest){
 		if(newUserIdHighest<=userIdHighest)return;
 		userIdHighest = newUserIdHighest;
 	};
+	this.getNCallbacksLeft=function(){
+		return list.length;
+	};
 	this.getUserIdHighest = function(){return userIdHighest;};
 	this.add = function(createNextShardsCallback){
 		list.push(createNextShardsCallback);
