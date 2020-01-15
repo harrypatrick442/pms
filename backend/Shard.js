@@ -14,6 +14,10 @@ function Shard(params){
 	if(!databaseConfiguration)throw new Error('No databaseConfiguration provied');
 	const dalPmsShard = new DalPmsShard(databaseConfiguration);
 	const accumultor = new Accumulator();
+	this.setId = function(value){
+		if(params.id)throw new Error('id already set');
+		params.id = value;
+	};
 	this.getId=function(){
 		return params.id;
 	};
@@ -37,6 +41,7 @@ function Shard(params){
 		
 	};
 	this.toJSON= function(){
+		console.log(params);
 		return {
 			id:params.id,
 			hostId:getHostId(),

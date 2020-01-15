@@ -24,6 +24,8 @@ module.exports = new(function(){
 						{name:USER_ID_TO_EXCLUSIVE, value:shard.getUserIdToExclusive(), type:sql.Int}
 				]
 			}).then(function(result){
+				console.log(result);
+				shard.setId(result.returnValue);
 				resolve(shard);
 			}).catch(reject);
 		});

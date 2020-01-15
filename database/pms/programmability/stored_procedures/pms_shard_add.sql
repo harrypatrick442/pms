@@ -7,4 +7,5 @@ Alter Procedure [dbo].[pms_shard_add](
 AS
 BEGIN 
 	insert into tblShards (hostId, created, name, userIdFromInclusive, userIdToExclusive) values(@hostId, GETDATE(), @name, @userIdFromInclusive, @userIdToExclusive);
+	return SCOPE_IDENTITY;
 END
