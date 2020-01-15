@@ -137,6 +137,7 @@ module.exports = new(function(){
 	}
 	function createNextShardFromRemote(msg, channel){
 		console.log('hi');
+		console.log(msg);
 		if(!initialized){
 			error('Not Initialized');
 			return;
