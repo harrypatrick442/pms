@@ -193,7 +193,7 @@ module.exports = new(function(){
 					DalPms.addShard(shard).then(()=>{
 						addShard(shard);
 						if(shardsCreator)
-							sendToOtherClientDataHosts(newShard, channel);
+							sendToOtherClientDataHosts(shard, channel);
 						createNextShardsLifespan.doResolves(shard, userIdFromInclusive, userIdToExclusive);
 						userIdFromInclusive = userIdToExclusive;
 						if(userIdFromInclusive>createNextShardsLifespan.getUserIdHighest()){
