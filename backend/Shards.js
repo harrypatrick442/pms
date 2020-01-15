@@ -19,7 +19,6 @@ module.exports = new(function(){
 	var shards, shardsCreator,createNextShardsLifespan, shardHosts, mapIdToShard=new Map();
 	this.initialize = initialize;
 	this.getShardForUserIds=function(userId1, userId2){
-		userId2 = 30001;
 		return new Promise((resolve, reject)=>{
 			getShardForUserIds(userId1, userId2).then((shard)=>{
 				resolve(shard);
