@@ -1,3 +1,5 @@
+const Core = require('core');
+const Iterator = Core.Iterator;
 module.exports = function (createNextShardsCallback, userIdHighest){
 	var list =[createNextShardsCallback];
 	this.updateHighestUserId=function(newUserIdHighest){
