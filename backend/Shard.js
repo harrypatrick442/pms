@@ -82,7 +82,7 @@ Shard.fromJSON=function(obj){
 		ShardHostHelper.getById(obj.hostId).then((shardHost)=>{
 			if(!shardHost)throw new Error('No ShardHost for this hostId');
 			obj.shardHost = shardHost;
-			obj.databaseConfiguration= DatabaseConfiguration.fromJSON(obj.databaseConiguration);
+			obj.databaseConfiguration= DatabaseConfiguration.fromJSON(obj.databaseConfiguration);
 			resolve(new Shard(obj));
 		}).catch(reject);
 	});

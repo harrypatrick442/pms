@@ -5,7 +5,7 @@ module.exports = new(function(){
 	console.log('GET');
 		return new Promise((resolve, reject)=>{
 			Shards.getShardForUserIds(userIdFrom, userIdTo).then((shard)=>{
-				console.log('shard');
+				console.log(shard.toJSON());
 			}).catch(reject);
 		});
 	};

@@ -19,6 +19,7 @@ module.exports = new(function(){
 	var shards, shardsCreator,createNextShardsLifespan, shardHosts, mapIdToShard=new Map();
 	this.initialize = initialize;
 	this.getShardForUserIds=function(userId1, userId2){
+		userId2 = 3000;
 		return new Promise((resolve, reject)=>{
 			getShardForUserIds(userId1, userId2).then((shard)=>{
 				resolve(shard);
@@ -277,7 +278,7 @@ module.exports = new(function(){
 		});
 		shards.forEach((shard)=>{
 			var shardHostStats;
-			shardHostStats = mapShardHostIdToStats.get(shard);
+			shardHostStats = mapShardHostIdToStats.get(shard.getHostId());
 			shardHostStats.nUsers+= shard.getUserIdToExclusive()-shard.getUserIdFromInclusive();
 		});
 		return Array.from(mapShardHostIdToStats.values()).select(shardHostStats=>new ShardHostStats(shardHostStats)).toList();
