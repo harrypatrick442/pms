@@ -29,9 +29,14 @@ module.exports = new(function(){
 		});
 	};
 	this.add = function(){
-		checkInitialized();
-		
-	};function checkInitialized(){
+		return new Promise((resolve, reject)=>{
+			checkInitialized();
+			Shards.getShardForUserIds(userIdFrom, userIdTo).then((shard)=>{
+				console.log(shard.toJSON());
+			}).catch(reject);
+		});
+	};
+	function checkInitialized(){
 		if(!initialized)throw new Error('Not Initialized');
 	}
 	function sendToDevices(messages){
@@ -52,7 +57,11 @@ module.exports = new(function(){
 	}
 	function incomingPms(msg, channel){
 		var userId = msg[S.USER_ID];
+		sendPmsToUser(userId, msg);
+	}
+	function sendPmsToUser(userId, msg){
 		var user = users.getById(userId);
+		if(!user)return;
 		user.getDevices().sendMessage(msg);
 	}
 })();

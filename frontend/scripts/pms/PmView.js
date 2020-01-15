@@ -27,7 +27,8 @@ var PmView = (function(){
 		var textBox = new TextBox({
 			[S.CLASS_NAME]:'text-box',
 			[S.MODEL]:model,
-			[S.PROPERTY_NAME]:S.TYPE_BOX_TEXT
+			[S.PROPERTY_NAME]:S.TYPE_BOX_TEXT,
+			[S.METHOD_NAME_ON_ENTER]:S.ON_ENTER
 		});
 		var buttonEmoticons = new Button({
 			[S.MODEL]:model,
@@ -36,7 +37,6 @@ var PmView = (function(){
 			[S.IMAGE_SEMANTIC_HOVER]:S.PMS_EMOTICON_ICON_HOVER,
 			[S.CLASS_NAME]:'emoticons'
 		});
-		
 		var controlsCollection = new ControlsCollection(buttonEmoticons, textBox, orderedItemsFeed, buttonClose);
 		element.appendChild(inner);
 		inner.appendChild(feed);

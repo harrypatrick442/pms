@@ -31,11 +31,15 @@ var PmViewModel = function(params){
 	this[S.GET_TYPE_BOX_TEXT]=function(){
 		return typeBoxText;
 	};
-	this[S.SET_TYPE_BOX_TEXT]=function(value){
+	this[S.SET_TYPE_BOX_TEXT]=setTextBoxTetx;
+	function setTextBoxText(value){
 		typeBoxText = value;
 		changed(S.TYPE_BOX_TEXT, value);
 	};
 	this[S.GET_IS_VIDEO]=function(){return false;};
+	this[S.ON_ENTER]=function(){
+		console.log('on enter');
+	};
 	PropertyBinding[S.CARRY_OVER](this, model, S.USERNAME, S.TITLE);
 	var _urlProvider;
 	getPms();
@@ -71,5 +75,8 @@ var PmViewModel = function(params){
 		},function(){
 			
 		});
+	}
+	function addPm(){
+		
 	}
 };
