@@ -107,14 +107,14 @@ module.exports = new(function(){
 	}
 	function addShardsFromJObjectsIfDontExist(jObjects){
 		return new Promise((resolve, reject)=>{
-			var iteratorShardJObjectss = new Iterator(jObjects);
+			var iteratorShardJObjects = new Iterator(jObjects);
 			next();
 			function next(shard){
-				if(!iterator.hasNext()){
+				if(!iteratorShardJObjects.hasNext()){
 					resolve(shard);//the last shard is for the userIdHighest which corresponds to the one we needed.
 					return;
 				}
-				var jObject = iterator.next();
+				var jObject = iteratorShardJObjects.next();
 				addShardFromJObjectIfDoesntExist(jObject).then(next).catch(reject);
 			}
 		});
