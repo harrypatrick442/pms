@@ -115,6 +115,7 @@ module.exports = new(function(){
 		return shard;
 	}
 	function createNextShardFromRemote(msg, channel){
+		console.log('hi');
 		if(!initialized){
 			error('Not Initialized');
 			return;
@@ -139,10 +140,11 @@ module.exports = new(function(){
 		}
 	}
 	function sendShardsUsingChannel(shards, channel, ticket){
+		console.log('sending back');
 		channel.send({
 			ticket:ticket,
 			successful:true,
-			shard:shards.select(shard=>shard.toJSON()).toList()
+			shards:shards.select(shard=>shard.toJSON()).toList()
 		});
 	}
 	function createNextShardsWithMeAsShardCreator(userIdHighest){//When this is called checks have already been done to see if the shard already exist.
