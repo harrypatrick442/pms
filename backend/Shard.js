@@ -64,7 +64,7 @@ function Shard(params){
 		return shardHost.getHostId();
 	}
 };
-Shard.fromSqlRow=function(row, sendToDevice){
+Shard.fromSqlRow=function(row, sendToDevices){
 	return new Promise((resolve, reject)=>{
 		//id, hostId, created, name, userIdFromInclusive, userIdToExclusive,
 		var hostId = row.hostId;
@@ -79,21 +79,21 @@ Shard.fromSqlRow=function(row, sendToDevice){
 					user:shardHost.getUser(),
 					password:shardHost.getPassword()
 				});
-				row.sendToDevice = sendToDevice;
+				row.sendToDevices = sendToDevices;
 				row.settings = settings;
 				resolve(new Shard(row));
 			}).catch(reject);
 		}).catch(reject);
 	});
 };
-Shard.fromJSON=function(obj, sendToDevice){
+Shard.fromJSON=function(obj, sendToDevices){
 	return new Promise((resolve, reject)=>{
 		//id, hostId, created, name, userIdFromInclusive, userIdToExclusive,=
 		ShardHostHelper.getById(obj.hostId).then((shardHost)=>{
 			if(!shardHost)throw new Error('No ShardHost for this hostId');
 			Settings.get().then((settings)=>{
 				obj.shardHost = shardHost;
-				obj.sendToDevice = sendToDevice;
+				obj.sendToDevices = sendToDevices;
 				obj.settings = settings;
 				obj.databaseConfiguration= DatabaseConfiguration.fromJSON(obj.databaseConfiguration);
 				resolve(new Shard(obj));

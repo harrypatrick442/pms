@@ -16,7 +16,7 @@ module.exports = new(function(){
 	const PmsShardBuilder= require('./PmsShardBuilder');
 	const Shard = require('./Shard');
 	const PmsLog = require('./PmsLog');
-	var shards, shardsCreator,createNextShardsLifespan, shardHosts, mapIdToShard=new Map();
+	var shards, shardsCreator, sendToDevices, createNextShardsLifespan, shardHosts, mapIdToShard=new Map();
 	this.initialize = initialize;
 	this.getShardForUserIds=function(userId1, userId2){
 		return new Promise((resolve, reject)=>{
@@ -31,10 +31,12 @@ module.exports = new(function(){
 		});
 	};
 	this.getShardForHighestUserId = getShardForHighestUserId;
-	function initialize(databaseConfiguration,shardsCreatorIn){
-		shardsCreator = shardsCreatorIn;
+	function initialize(params){
 		return new Promise((resolve, reject)=>{
 			if(initialized)throw new Error('Already initialized');
+			const databaseConfiguration=params.databaseConfiguration;
+			sendToDevices = params.sendToDevices;
+			console.log(sendToDevices);
 			DalPms.initialize(databaseConfiguration);
 			Settings.get().then((settings)=>{
 				HostHelper.getHostMe().then((hostMe)=>{ 
@@ -142,20 +144,6 @@ module.exports = new(function(){
 				resolve(shard);
 			}).catch(reject);
 		});
-	}
-	function sendToDevices(messages){
-		var mapUserIdToMessages = new Map();
-		messages.forEach((message)=>{
-			sendToDevices_mapUserIdToMessage(mapUserIdToMessages, message[S.USER_ID_FROM], message);
-			sendToDevices_mapUserIdToMessage(mapUserIdToMessages, message[S.USER_ID_TO], message);
-		});
-		
-	}
-	function sendToDevices_mapUserIdToMessage(mapUserIdToMessages, userId, message){
-		if(!mapUserIdToMessages.has())
-			mapUserIdToMessages.set(userId,[message]);
-		else 
-			mapUserIdToMessages.get(userId).push(message);
 	}
 	function createNextShardFromRemote(msg, channel){
 		console.log('hi');

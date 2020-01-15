@@ -11,6 +11,15 @@ module.exports = new (function(){
 		this.getMaxNShardsCreateAtOnce=function(){
 			return params.maxNShardsCreateAtOnce;
 		};
+		this.getAccumulatorMaxNMessages=function(){
+			return params.accumulatorMaxNMessages;
+		};
+		this.getAccumulatorMaxTotalWait=function(){
+			return params.accumulatorMaxTotalWait;
+		};
+		this.getAccumulatorMaxWaitBetweenMessages=function(){
+			return params.accumulatorMaxWaitBetweenMessages;
+		};
 	}
 	this.get = function(){
 		return new Promise((resolve, reject)=>{

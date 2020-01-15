@@ -1,5 +1,7 @@
 const PmsLog = require('./PmsLog');
-module.exports = function(settings, dalPmsShard){
+const Core = require('core');
+const TemporalCallback = Core.TemporalCallback;
+module.exports = function(params){
 	const settings = params.settings;
 	const dalPmsShard = params.dalPmsShard;
 	const sendToDevices = params.sendToDevices;
@@ -7,9 +9,9 @@ module.exports = function(settings, dalPmsShard){
 	var list =[];
 	var temporalCallbackFlush = new TemporalCallback({			
 		callback :flush,
-		maxNTriggers = settings.getAccumulatorMaxNMessages(),
-		maxTotalDelay:settings.getAccumulatorMaxTotalDelay(),
-		delay: settings.getAccumulatorDelay()
+		maxNTriggers:settings.getAccumulatorMaxNMessages(),
+		maxTotalDelay:settings.getAccumulatorMaxTotalWait(),
+		delay: settings.getAccumulatorMaxWaitBetweenMessages()
 	});
 	this.add = function(message){
 		validateMessage(message);
