@@ -51,9 +51,7 @@ function Shard(params){
 		};
 	};
 	this.update = function(){
-		return new Promise((resolve, reject)=>{
-			resolve();
-		});
+		return dalPmsShard.createHorizontalPartitions();
 	};
 	function getHostId(){
 		return shardHost.getHostId();
