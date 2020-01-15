@@ -107,7 +107,7 @@ module.exports = new(function(){
 	}
 	function addShardsFromJObjectsIfDontExist(jObjects){
 		return new Promise((resolve, reject)=>{
-			var iteratorShardJObjectss = new Iterator(res.shards);
+			var iteratorShardJObjectss = new Iterator(jObjects);
 			next();
 			function next(shard){
 				if(!iterator.hasNext()){
