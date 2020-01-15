@@ -41,7 +41,6 @@ function Shard(params){
 		
 	};
 	this.toJSON= function(){
-		console.log(params);
 		return {
 			id:params.id,
 			hostId:getHostId(),
@@ -51,7 +50,7 @@ function Shard(params){
 		};
 	};
 	this.update = function(){
-		return dalPmsShard.createHorizontalPartitions();
+		return dalPmsShard.update();
 	};
 	function getHostId(){
 		return shardHost.getHostId();
