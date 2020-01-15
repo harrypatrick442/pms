@@ -31,10 +31,13 @@ module.exports = new (function(params){
 		]
 	});
 	const tableTypePms = new Table({
-		new TableColumn({name:'userIdFrom', type:TableColumnTypes.INT, nullable:false}),
-		new TableColumn({name:'userIdTo', type:TableColumnTypes.INT, nullable:false}),
-		new TableColumn({name:'sentAt', type:TableColumnTypes.DATETIME, nullable:false}),
-		new TableColumn({name:'content', type:TableColumnTypes.TEXT, nullable:false})
+		name:'Pms',
+		columns:[
+			new TableColumn({name:'userIdFrom', type:TableColumnTypes.INT, nullable:false}),
+			new TableColumn({name:'userIdTo', type:TableColumnTypes.INT, nullable:false}),
+			new TableColumn({name:'sentAt', type:TableColumnTypes.DATETIME, nullable:false}),
+			new TableColumn({name:'content', type:TableColumnTypes.TEXT, nullable:false})
+		]
 	});
 	const tableTypes =[tableTypePms];
 	const tables =[tblHorizontalPartitions];
