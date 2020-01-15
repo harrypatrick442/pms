@@ -145,7 +145,7 @@ module.exports = new(function(){
 	function sendShardsUsingChannel(shards, channel, ticket){
 		console.log('sending back');
 		channel.send({
-			ticket:ticket,ss
+			ticket:ticket,
 			successful:true,
 			shards:shards.select(shard=>shard.toJSON()).toList()
 		});
