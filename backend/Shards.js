@@ -20,7 +20,7 @@ module.exports = new(function(){
 	this.initialize = initialize;
 	this.getShardForUserIds=function(userId1, userId2){
 		return new Promise((resolve, reject)=>{
-			userId2 = 4000;
+			userId2 = 9001;
 			getShardForUserIds(userId1, userId2).then((shard)=>{
 				resolve(shard);
 			}).catch((err)=>{
@@ -186,12 +186,12 @@ module.exports = new(function(){
 			var shardSize;
 			Settings.get().then((settings)=>{
 				shardSize = settings.getShardSize();
+				if(userIdFromInclusive+(shardSize*settings.getMaxNShardsCreateAtOnce())<=userIdHighest){
+					error(new Error('Trying  to create too many shards at once. Might be someone doing it on purpose'));
+					return;
+				}
 				next();
 			}).catch(reject);
-			if(userIdFromInclusive+(shardSize*settings.getMaxNShardsCreateAtOnce())<=userIdHighest){
-				error(new Error('Trying  to create too many shards at once. Might be someone doing it on purpose'));
-				return;
-			}
 			function next(){
 				var userIdToExclusive = userIdFromInclusive + shardSize
 				var shardHost = pickShardHostForNextShard();
