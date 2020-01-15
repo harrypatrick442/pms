@@ -70,7 +70,8 @@ Shard.fromSqlRow=function(row){
 			row.databaseConfiguration=new DatabaseConfiguration({
 				database:row.name,
 				server:shardHost.getHost().getIp(),
-				user:shardHost.getUser()
+				user:shardHost.getUser(),
+				user:shardHost.getPassword()
 			});
 			resolve(new Shard(row));
 		}).catch(reject);
