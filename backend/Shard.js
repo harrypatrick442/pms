@@ -71,7 +71,7 @@ Shard.fromSqlRow=function(row){
 				database:row.name,
 				server:shardHost.getHost().getIp(),
 				user:shardHost.getUser(),
-				user:shardHost.getPassword()
+				password:shardHost.getPassword()
 			});
 			resolve(new Shard(row));
 		}).catch(reject);
