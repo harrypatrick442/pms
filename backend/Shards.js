@@ -144,7 +144,7 @@ module.exports = new(function(){
 		}
 		var userIdHighest = msg.userIdHighest;
 		var myNextUserIdFromInclusive = msg.myNextUserIdFromInclusive;
-		var localUserIdToExclusive = getNextShardUserIdFromInclusive()-1;
+		var localUserIdToExclusive = getNextShardUserIdFromInclusive();
 		var ticket = msg.ticket;
 		if(localUserIdToExclusive<=userIdHighest){
 			createNextShardsWithMeAsShardCreator(userIdHighest, channel).then((newShardForUserIdHighest)=>{
