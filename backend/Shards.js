@@ -224,7 +224,7 @@ module.exports = new(function(){
 		};
 		shardHosts.forEach((shardHost)=>{
 			var channel = Router.get().getChannelForHostId(shardHost.getHostId());
-			if(!channel===channelToSkip)
+			if(channel&&(channel!==channelToSkip))
 				try{channel.send(msg);}catch(ex){console.error(ex);}//This is not critical and put this here just to be safe. It doesn't particularly matter if this fails, cos it will simply get the shard when it next request creation.		
 		});
 	}
