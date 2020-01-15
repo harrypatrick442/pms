@@ -119,22 +119,17 @@ module.exports = new(function(){
 			error('Not Initialized');
 			return;
 		}
-		console.log('createNextShardFromRemote');
 		var userIdHighest = msg.userIdHighest;
 		var myNextUserIdFromInclusive = msg.myNextUserIdFromInclusive;
 		var localUserIdToExclusive = getNextShardUserIdFromInclusive()-1;
-		console.log(userIdHighest);
-		console.log(myNextUserIdFromInclusive);
-		console.log(localUserIdToExclusive);
-		if(localUserIdToExclusive<=userIdHighest){;
-		console.log('localUserIdToExclusive<=userIdHighest');
+		var ticket = msg.ticket;
+		if(localUserIdToExclusive<=userIdHighest){
 			createNextShardsWithMeAsShardCreator(userIdHighest).then((newShardForUserIdHighest)=>{
-				sendShardsUsingChannel(getShardsInRange(myNextUserIdFromInclusive, userIdHighes+1, true), channel);
+				sendShardsUsingChannel(getShardsInRange(myNextUserIdFromInclusive, userIdHighes+1, true), channel, ticket);
 			}).catch(error);
 			return;
 		}
-		console.log('sendShardsUsingChannel');
-		sendShardsUsingChannel(getShardsInRange(myNextUserIdFromInclusive, userIdHighest+1, true), channel);
+		sendShardsUsingChannel(getShardsInRange(myNextUserIdFromInclusive, userIdHighest+1, true), channel, ticket);
 		function error(err){
 			PmsLog.error(err);
 			channel.send({
@@ -143,9 +138,9 @@ module.exports = new(function(){
 			});
 		}
 	}
-	function sendShardsUsingChannel(shards, channel){
+	function sendShardsUsingChannel(shards, channel, ticket){
 		channel.send({
-			ticket:msg.ticket,
+			ticket:ticket,
 			successful:true,
 			shard:shards.select(shard=>shard.toJSON()).toList()
 		});
