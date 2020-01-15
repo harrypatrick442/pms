@@ -20,7 +20,7 @@ module.exports = new(function(){
 	this.initialize = initialize;
 	this.getShardForUserIds=function(userId1, userId2){
 		return new Promise((resolve, reject)=>{
-			userId2 = 70000;
+			userId2 = 90000;
 			getShardForUserIds(userId1, userId2).then((shard)=>{
 				resolve(shard);
 			}).catch((err)=>{
@@ -170,6 +170,7 @@ module.exports = new(function(){
 	}
 	function createNextShardsWithMeAsShardCreator(userIdHighest, channel){//When this is called checks have already been done to see if the shard already exist.
 		return new Promise((resolve, reject)=>{
+			console.log(userIdHighest);
 			var createNextShardsCallback = new CreateNextShardsCallback(resolve, reject, userIdHighest);
 			if(createNextShardsLifespan){
 				createNextShardsLifespan.add(createNextShardsCallback);
