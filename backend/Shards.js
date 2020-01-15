@@ -14,7 +14,8 @@ module.exports = new(function(){
 	const CreateNextShardsCallback= require('./CreateNextShardsCallback');
 	const CreateNextShardsLifespan= require('./CreateNextShardsLifespan');
 	const PmsShardBuilder= require('./PmsShardBuilder');
-	var PmsLog = require('./PmsLog');
+	const Shard = require('./Shard');
+	const PmsLog = require('./PmsLog');
 	var shards, shardsCreator,createNextShardsLifespan, shardHosts, mapIdToShard=new Map();
 	this.initialize = initialize;
 	this.getShardForUserIds=function(userId1, userId2){
@@ -96,11 +97,7 @@ module.exports = new(function(){
 					if(!res.successful){
 						throw new Error('Error creating shard on remote machine');
 					}
-					var shard;
-					res.shards.forEach((jObject)=>{
-						shard = addShardFromJObjectIfDoesntExist(jObject);
-					});
-					resolve(shard);
+					addShardsFromJObjectsIfDontExist(res.shards).then(resolve).catch(reject);
 				}).catch(reject);
 			}).catch(reject);
 		});
@@ -108,14 +105,34 @@ module.exports = new(function(){
 	function getShardById(id){
 		return mapIdToShard.get(id);
 	}
-	function addShssardFromJObjectIfDoesntExist(jObject){
-		var id = jObject.id;
-		if(!id)throw new Error('No id');
-		var shard = getShardById(id);
-		if(shard)return shard;
-		shard = Shard.fromJSON(res.shard);
-		addShard(shard);
-		return shard;
+	function addShardsFromJObjectsIfDontExist(jObjects){
+		return new Promise((resolve, reject)=>{
+			var iteratorShardJObjectss = new Iterator(res.shards);
+			next();
+			function next(shard){
+				if(!iterator.hasNext()){
+					resolve(shard);//the last shard is for the userIdHighest which corresponds to the one we needed.
+					return;
+				}
+				var jObject = iterator.next();
+				addShardFromJObjectIfDoesntEssxist(jObject).then(next).catch(reject);
+			}
+		});
+	}
+	function addShardFromJObjectIfDoesntExist(jObject){
+		return new Promise((resolve, reject)=>{s
+			var id = jObject.id;
+			if(!id)throw new Error('No id');
+			var shard = getShardById(id);
+			if(shard){
+				resolve(shard);
+				return;
+			};
+			Shard.fromJSON(res.shard).then((shard)=>{
+			addShard(shard);
+			resolve(shard);
+			}).catch(reject);
+		});
 	}
 	function createNextShardFromRemote(msg, channel){
 		console.log('hi');
