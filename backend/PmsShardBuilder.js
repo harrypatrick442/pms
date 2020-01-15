@@ -30,6 +30,13 @@ module.exports = new (function(params){
 			new TableColumn({name:'createdAt', type:TableColumnTypes.DATETIME, nullable:false})
 		]
 	});
+	const tableTypePms = new Table({
+		new TableColumn({name:'userIdFrom', type:TableColumnTypes.INT, nullable:false}),
+		new TableColumn({name:'userIdTo', type:TableColumnTypes.INT, nullable:false}),
+		new TableColumn({name:'sentAt', type:TableColumnTypes.DATETIME, nullable:false}),
+		new TableColumn({name:'content', type:TableColumnTypes.TEXT, nullable:false})
+	});
+	const tableTypes =[tableTypePms];
 	const tables =[tblHorizontalPartitions];
 	this.build = function(params){
 		const userIdFromInclusive = params.userIdFromInclusive;
@@ -41,6 +48,7 @@ module.exports = new (function(params){
 			name : 'pms_'+userIdFromInclusive+'_'+userIdToExclusive,
 			programmablePaths:programmablePaths,
 			tables:tables,
+			tableTypes:tableTypes,
 			createShard:(databaseConfiguration, shardHost)=>{return createShard(databaseConfiguration, shardHost, userIdFromInclusive, userIdToExclusive);}
 		});
 	};
