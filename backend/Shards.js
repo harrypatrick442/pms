@@ -224,9 +224,10 @@ module.exports = new(function(){
 		var index=0;
 		do{
 			var shard = shards[index];
+			if(!shard)break;
 			if(shard.getId()>newShard.getId()){
 				shards.splice(index, 0, newShard);
-				return;
+				return newShard;
 			}
 			index++;
 		}while(index<shards.length);
