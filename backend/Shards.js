@@ -49,9 +49,8 @@ module.exports = new(function(){
 								mapIdToShard.set(shard.getId(),shard);
 							});
 							if(shardsCreator){
-								var router = Router.get();
-								router.addMessageCallback(S.CREATE_NEXT_SHARD, createNextShardFromRemote);
-								router.addMessageCallback(S.NEW_SHARD, newShardFromRemote);
+								Router.addMessageCallback(S.CREATE_NEXT_SHARD, createNextShardFromRemote);
+								Router.addMessageCallback(S.NEW_SHARD, newShardFromRemote);
 							}
 							initialized = true;
 							resolve();
@@ -96,7 +95,7 @@ module.exports = new(function(){
 	function createNextShardsRemote(userIdHighest){
 		return new Promise((resolve, reject)=>{
 			Settings.get().then((settings)=>{
-				var channel = Router.get().getChannelForHostId(settings.getHostIdShardCreator());
+				var channel = Router.getChannelForHostId(settings.getHostIdShardCreator());
 				if(!channel)throw new Error('Could not get the channel for the shard creator');
 				TicketedSend.sendWithPromise(channel, {
 					type:S.CREATE_NEXT_SHARD,
@@ -250,7 +249,7 @@ module.exports = new(function(){
 			shard:newShard
 		};
 		shardHosts.forEach((shardHost)=>{
-			var channel = Router.get().getChannelForHostId(shardHost.getHostId());
+			var channel = Router.getChannelForHostId(shardHost.getHostId());
 			if(channel&&(channel!==channelToSkip))
 				try{channel.send(msg);}catch(ex){console.error(ex);}//This is not critical and put this here just to be safe. It doesn't particularly matter if this fails, cos it will simply get the shard when it next request creation.		
 		});

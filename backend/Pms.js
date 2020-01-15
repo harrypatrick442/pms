@@ -39,7 +39,7 @@ module.exports = new(function(){
 			sendToDevices_mapUserIdToMessage(mapUserIdToMessages, message[S.USER_ID_FROM], message);
 			sendToDevices_mapUserIdToMessage(mapUserIdToMessages, message[S.USER_ID_TO], message);
 		});
-		var usersRouter = UsersRouter.get();
+		var usersRouter = UsersRouter;
 		mapUserIdToMessages.forEach((messages, userId)=>{
 			userRouter.sendToServersWith(userId, {[S.TYPE]:S.PMS, [S.MESSAGES]:messages});
 		});
