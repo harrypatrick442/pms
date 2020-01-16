@@ -34,6 +34,7 @@ module.exports = new(function(){
 			
 			Shards.getShardForUserIds(userIdFrom, userIdTo).then((shard)=>{
 				console.log(shard.toJSON());
+				shard.add(message);
 				resolve();
 			}).catch(reject);
 		});

@@ -14,6 +14,7 @@ module.exports = function(params){
 		delay: settings.getAccumulatorMaxWaitBetweenMessages()
 	});
 	this.add = function(message){
+		console.log('adding message to accumulator');
 		validateMessage(message);
 		list.push(message);
 		temporalCallbackFlush.trigger();
