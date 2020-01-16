@@ -14,7 +14,7 @@ exec sp_executesql @str;
 			CREATE Procedure pms_shard_pms_get(
  @userId1 int,
  @userId2 int,
- @fromInclusive datetime,
+ @fromInclusive datetime=null,
  @toExclusive datetime = null
 )
 AS
