@@ -35,7 +35,7 @@ BEGIN
 	set @userIdLowest  =@userId1;
 	end
 	if(@toExclusive is null) begin
-	 set @toExclusive = @now;
+	 set @toExclusive =getdate();
 	end
 	declare @insertedFromInclusive datetime = DATEADD(MINUTE,-3,@fromInclusive);
 	declare @insertedToExclusive datetime =@toExclusive;';
