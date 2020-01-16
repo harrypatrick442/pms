@@ -20,7 +20,7 @@ exec sp_executesql @str;
 AS
 BEGIN
 	create table #tempPms(
-	[userIdHighest] int, [userIdLowest] int, [content] text, [sentAt] datetime, [from] int
+	[userIdHighest] int, [userIdLowest] int, [content] text, [sentAt] datetime, [from] int, [clientAssignedUuid] uniqueidentifier
 	);
 	declare @userIdHighest int;
 	declare @userIdLowest int;

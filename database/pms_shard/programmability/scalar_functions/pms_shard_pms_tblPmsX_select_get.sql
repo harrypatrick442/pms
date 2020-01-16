@@ -3,8 +3,8 @@ RETURNS varchar(max)
 AS
 BEGIN
 declare @str varchar(max) ='insert into '+
-@temporaryTableNamePms +'([userIdHighest], [userIdLowest], [content], [sentAt], [from]) select 
- [userIdHighest], [userIdLowest], [content], [sentAt], [from] from '
+@temporaryTableNamePms +'([userIdHighest], [userIdLowest], [content], [sentAt], [from],[clientAssignedUuid]) select 
+ [userIdHighest], [userIdLowest], [content], [sentAt], [from], [clientAssignedUuid] from  '
 +@tableName+' where '
 +@tableName+'.[insertedAt] >= @insertedFromInclusive and '
 +@tableName+'.[insertedAt] < @insertedToExclusive and '
