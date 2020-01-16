@@ -19,7 +19,7 @@ Alter Procedure pms_shard_pms_add(
 AS
 BEGIN
 	declare @now datetime = GETDATE();
-	insert into '+@tableName+'([userIdHighest], [userIdLowest], [sentAt], [insertedAt], [from], [content], [getClientAssignedUuid]) 
+	insert into '+@tableName+'([userIdHighest], [userIdLowest], [sentAt], [insertedAt], [from], [content], [clientAssignedUuid]) 
 	select 
 	(case when userIdFrom < userIdTo then userIdTo else userIdFrom end), 
 	(case when userIdFrom > userIdTo then userIdTo else userIdFrom end),
