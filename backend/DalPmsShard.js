@@ -4,7 +4,7 @@ const Dal = require('dal');
 const sql = Dal.sql;
 const Core = require('core');
 const S = require('strings').S;
-const PMS = 'pms', USER_ID_1='userId1', USER_ID_2='userId2';
+const PMS = 'pms', USER_ID_1='userId1', USER_ID_2='userId2', FROM_INCLUSIVE='fromInclusive', TO_EXCLUSIVE='toExclusive';
 module.exports = function(configuration){
 	const dal = new Dal(configuration);
 	this.update = function(){
