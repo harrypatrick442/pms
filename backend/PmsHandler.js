@@ -9,7 +9,8 @@ module.exports = new(function(){
 		console.log(req);
 		switch(req[S.PMS_TYPE]){
 			case S.GET:
-				Pms.get(userIdFrom, req[S.USER_ID], req[S.FROM_INCLUSIVE], req[S.TO_EXCLUSIVE]).then((messages)=>{
+				var userIdTo = parseInt(req[S.USER_ID]);
+				Pms.get(userIdFrom, userIdTo, req[S.FROM_INCLUSIVE], req[S.TO_EXCLUSIVE]).then((messages)=>{
 					callback({[S.TICKET]:req[S.TICKET], [S.SUCCESSFUL]:true, [S.MESSAGES]:messages});
 				}).catch((err)=>{
 					PmsLog.error(err);
@@ -17,7 +18,6 @@ module.exports = new(function(){
 				});
 			break
 			case S.ADD:
-				console.log(req);
 				var userIdTo = parseInt(req[S.USER_ID]);
 				Pms.add({[S.USER_ID_FROM]:parseInt(userIdFrom), [S.USER_ID_TO]:userIdTo, [S.SENT_AT]:new Date(), [S.CONTENT]:req[S.CONTENT]}, userIdFrom, userIdTo)
 				.then(()=>{

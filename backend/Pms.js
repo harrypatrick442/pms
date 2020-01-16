@@ -20,11 +20,12 @@ module.exports = new(function(){
 			}).catch((err)=>{initializing=false; reject(err);});
 		});
 	};
-	this.get = function(userIdFrom, userIdTo, fromInclusive, toInclusive){
+	this.get = function(userIdFrom, userIdTo, fromInclusive, toExclusive){
 		return new Promise((resolve, reject)=>{
 			checkInitialized();
+			if(fromInclusive===null||fromInclusive===undefined)throw new Error('fromInclusive must be a valid date');
 			Shards.getShardForUserIds(userIdFrom, userIdTo).then((shard)=>{
-				console.log(shard.toJSON());
+				shard.get(userIdFrom, userIdTo, fromInclusive, toExclusive).then(resolve).catch(reject);
 			}).catch(reject);
 		});
 	};

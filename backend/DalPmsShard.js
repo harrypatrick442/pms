@@ -1,4 +1,4 @@
-const STORED_PROCEDURE_ADD= 'pms_shard_pms_add';
+const STORED_PROCEDURE_ADD= 'pms_shard_pms_add', STORED_PROCEDURE_GET= 'pms_shard_pms_get';
 const STORED_PROCEDURE_PMS_SHARD_UPDATE='pms_shard_update';
 const Dal = require('dal');	
 const sql = Dal.sql;
@@ -21,9 +21,9 @@ module.exports = function(configuration){
 	};
 	this.get = function(title, userId){
 		return new Promise(function(resolve, reject){
-			dal.query({storedProcedure:STORED_PROCEDURE_ADD,
+			dal.query({storedProcedure:STORED_PROCEDURE_GET,
 				parameters:[
-					//{name:USER_ID, value:userId, type:sql.Int}
+					{name:USER_ID, value:userId, type:sql.Int}
 				]
 			}).then(function(result){
 				resolve(result.recordset);
