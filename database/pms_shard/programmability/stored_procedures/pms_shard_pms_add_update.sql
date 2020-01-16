@@ -3,7 +3,7 @@ AS
 BEGIN
 	declare @str nvarchar(max)='';
 	declare @tableName varchar(100);
-	select top(1) @tableName = [tableName] from tblHorizontalPartitions where tblHorizontalPartitions.[from]>=GETDATE() order by [id] asc;
+	select top(1) @tableName = [tableName] from tblHorizontalPartitions where tblHorizontalPartitions.[from]<GETDATE() order by [id] desc;
 	set @str+='IF EXISTS (
         SELECT type_desc, type
         FROM sys.procedures WITH(NOLOCK)

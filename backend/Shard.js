@@ -17,7 +17,7 @@ function Shard(params){
 	if(!settings)throw new Error('No settings provied');
 	if(!sendToDevices)throw new Error('No sendToDevices provied');
 	const dalPmsShard = new DalPmsShard(databaseConfiguration);
-	const accumultor = new Accumulator({
+	const accumulator = new Accumulator({
 		settings:settings,
 		dalPmsShard:dalPmsShard,
 		sendToDevices:sendToDevices
@@ -42,8 +42,8 @@ function Shard(params){
 	this.getShardHost=function(){
 		return shardHost;
 	};
-	this.add = function(){
-		accumulator.add();
+	this.add = function(message){
+		accumulator.add(message);
 	};
 	this.get = function(){
 		

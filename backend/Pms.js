@@ -31,7 +31,7 @@ module.exports = new(function(){
 	this.add = function(message, userIdFrom, userIdTo){
 		return new Promise((resolve, reject)=>{
 			checkInitialized();
-			
+			console.log(message);
 			Shards.getShardForUserIds(userIdFrom, userIdTo).then((shard)=>{
 				console.log(shard.toJSON());
 				shard.add(message);

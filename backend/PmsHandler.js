@@ -18,8 +18,8 @@ module.exports = new(function(){
 			break
 			case S.ADD:
 				console.log(req);
-				var userIdTo = req[S.USER_ID];
-				Pms.add({[S.USER_ID_FROM]:userIdFrom, [S.USER_ID_TO]:userIdTo, [S.SENT_AT]:getTime(), [S.CONTENT]:req[S.CONTENT]}, userIdFrom, userIdTo)
+				var userIdTo = parseInt(req[S.USER_ID]);
+				Pms.add({[S.USER_ID_FROM]:parseInt(userIdFrom), [S.USER_ID_TO]:userIdTo, [S.SENT_AT]:getTime(), [S.CONTENT]:req[S.CONTENT]}, userIdFrom, userIdTo)
 				.then(()=>{
 					callback({[S.TICKET]:req[S.TICKET], [S.SUCCESSFUL]:true });
 				})
