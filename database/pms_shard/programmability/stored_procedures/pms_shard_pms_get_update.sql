@@ -54,7 +54,7 @@ BEGIN
 				end;'
 			else
 				')
-				begin '
+				begin '+
 					dbo.pms_shard_pms_tblPmsX_select_get(tblHorizontalPartitions.[tableName], '#tempPms')+
 				'end'
 			end) 
