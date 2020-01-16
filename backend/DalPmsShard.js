@@ -4,7 +4,7 @@ const Dal = require('dal');
 const sql = Dal.sql;
 const Core = require('core');
 const S = require('strings').S;
-const PMS = 'pms';
+const PMS = 'pms', USER_ID_1='userId1', USER_ID_2='userId2';
 module.exports = function(configuration){
 	const dal = new Dal(configuration);
 	this.update = function(){
@@ -19,11 +19,14 @@ module.exports = function(configuration){
 			}).then(resolve).catch(reject);
 		});
 	};
-	this.get = function(title, userId){
+	this.get = function(title, userId1, userId2, fromInclusive, toExclusive){
 		return new Promise(function(resolve, reject){
 			dal.query({storedProcedure:STORED_PROCEDURE_GET,
 				parameters:[
-					{name:USER_ID, value:userId, type:sql.Int}
+					{name:USER_ID_1, value:userId1, type:sql.Int},
+					{name:USER_ID_2, value:userId2, type:sql.Int},
+					{name:FROM_INCLUSIVE, value:fromInclusive, type:sql.DateTime},
+					{name:TO_EXCLUSIVE, value:toExclusive, type:sql.DateTime}
 				]
 			}).then(function(result){
 				resolve(result.recordset);

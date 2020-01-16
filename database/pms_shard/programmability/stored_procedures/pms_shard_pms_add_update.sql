@@ -27,7 +27,7 @@ BEGIN
 	@now, 
 	userIdFrom,
 	pms.[content],
-	pms.[clientAssignedUuid],
+	pms.[clientAssignedUuid]
 	from @pms pms;
 END';
 exec sp_executesql @str;

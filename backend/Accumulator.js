@@ -40,7 +40,7 @@ module.exports = function(params){
 		table.columns.add(USER_ID_TO,sql.Int);
 		table.columns.add(SENT_AT,sql.DateTime);
 		table.columns.add(CONTENT,sql.VarChar(640));
-		table.columns.add(CLIENT_ASSIGNED_HASH,sql.UniqueIdentifier);
+		table.columns.add(CLIENT_ASSIGNED_UUID,sql.UniqueIdentifier);
 		currentList.forEach((message)=>{
 			table.rows.add(message[S.USER_ID_FROM], message[S.USER_ID_TO], message[S.SENT_AT], message[S.CONTENT], message[S.CLIENT_ASSIGNED_UUID]);
 		});
