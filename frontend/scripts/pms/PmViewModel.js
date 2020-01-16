@@ -94,14 +94,16 @@ var PmViewModel = function(params){
 	}
 	function addPm(content){
 		return new Promise(function(resolve, reject){
-			console.log(content);
+			console.log(getClientAssignedUuid());
 			ticketedSend[S.SEND]({
 				[S.TYPE]:S.PMS,
 				[S.PMS_TYPE]:S.ADD,
-				[S.CONTENT]:content,
 				[S.SESSION_ID]:getSessionId(),
-				[S.CLIENT_ASSIGNED_UUID]:getClientAssignedUuid(),
-				[S.USER_ID]:model[S.GET_USER_ID]()
+				[S.MESSAGE]:{
+					[S.CONTENT]:content,
+					[S.CLIENT_ASSIGNED_UUID]:getClientAssignedUuid(),
+					[S.USER_ID_TO]:model[S.GET_USER_ID]()
+				}
 			},resolve,reject, TIMEOUT_SEND_ADD);
 		});
 	}

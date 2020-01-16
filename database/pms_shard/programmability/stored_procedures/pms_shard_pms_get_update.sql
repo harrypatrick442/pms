@@ -36,7 +36,11 @@ BEGIN
 	end
 	declare @insertedFromInclusive datetime = DATEADD(MINUTE,-3,@fromInclusive);
 	declare @insertedToExclusive datetime =@toExclusive;';
-	
+	declare @doReturn varchar(max) = '
+	select [clientAssignedUuid] as /*<S_CLIENT_ASSIGNED_UUID>*/''clientAssignedUuid''/*<S_CLIENT_ASSIGNED_UUID>*/,
+	[content] as /*<S_CONTENT>*/''content''/*<S_CONTENT>*/,
+	[sentAt] as /*<S_SENT_AT>*/''sentAt''/*<S_SENT_AT>*/, 
+	[from] as /*<S_FROM>*/''from''/*<S_FROM>*/ from #tempPms';
 	
 	set @str +=STUFF((
         select 
@@ -49,7 +53,7 @@ BEGIN
 					dbo.pms_shard_pms_tblPmsX_select_get(tblHorizontalPartitions.[tableName], '#tempPms')+
 				' end
 				if(@insertedFromInclusive >= CAST('''+convert(varchar(25), tblHorizontalPartitions.[to], 120)+'''as datetime))
-				begin
+				begin '+@doReturn+'
 					return;
 				end;'
 			else
@@ -62,11 +66,6 @@ BEGIN
         for xml path(''), type
     ).value('.', 'varchar(max)'), 1, 0, '') ;
 
-	set @str+='
-	select [clientAssignedUuid] as /*<S_CLIENT_ASSIGNED_UUID>*/''clientAssignedUuid''/*<S_CLIENT_ASSIGNED_UUID>*/,
-	[content] as /*<S_CONTENT>*/''content''/*<S_CONTENT>*/,
-	[sentAt] as /*<S_SENT_AT>*/''sentAt''/*<S_SENT_AT>*/, 
-	[from] as /*<S_FROM>*/''from''/*<S_FROM>*/ from #tempPms;
-END';
+	set @str+=@doSelect+' END;';
 exec sp_executesql @str;
 END

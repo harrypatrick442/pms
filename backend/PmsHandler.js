@@ -18,8 +18,11 @@ module.exports = new(function(){
 				});
 			break
 			case S.ADD:
-				var userIdTo = parseInt(req[S.USER_ID]);
-				Pms.add({[S.USER_ID_FROM]:parseInt(userIdFrom), [S.USER_ID_TO]:userIdTo, [S.SENT_AT]:new Date(), [S.CONTENT]:req[S.CONTENT]}, userIdFrom, userIdTo)
+				var message = req[S.MESSAGE];
+				var userIdTo = parseInt(message[S.USER_ID_TO]);
+				message[S.USER_ID_FROM]=userIdFrom;
+				message[S.SENT_AT]=new Date();
+				Pms.add(message, userIdFrom, userIdTo)
 				.then(()=>{
 					callback({[S.TICKET]:req[S.TICKET], [S.SUCCESSFUL]:true });
 				})

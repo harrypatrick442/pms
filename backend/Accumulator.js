@@ -42,6 +42,7 @@ module.exports = function(params){
 		table.columns.add(CONTENT,sql.VarChar(640));
 		table.columns.add(CLIENT_ASSIGNED_UUID,sql.UniqueIdentifier);
 		currentList.forEach((message)=>{
+			console.log([message[S.USER_ID_FROM], message[S.USER_ID_TO], message[S.SENT_AT], message[S.CONTENT], message[S.CLIENT_ASSIGNED_UUID]]);
 			table.rows.add(message[S.USER_ID_FROM], message[S.USER_ID_TO], message[S.SENT_AT], message[S.CONTENT], message[S.CLIENT_ASSIGNED_UUID]);
 		});
 		dalPmsShard.add(table).then(()=>{
