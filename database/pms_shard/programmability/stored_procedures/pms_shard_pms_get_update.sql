@@ -11,7 +11,7 @@ BEGIN
      DROP PROCEDURE dbo.pms_shard_pms_get';
 exec sp_executesql @str;
 	set @str='
-			Alter Procedure pms_shard_pms_get(
+			Create Procedure pms_shard_pms_get(
  @userId1 int,
  @userId2 int,
  @fromInclusive datetime,
@@ -47,7 +47,7 @@ BEGIN
 				convert(varchar(25), tblHorizontalPartitions.[to], 120)+'''as datetime))
 				begin '+
 					dbo.pms_shard_pms_tblPmsX_select_get(tblHorizontalPartitions.[tableName], '#tempPms')+
-				'end
+				' end
 				if(@insertedFromInclusive >= CAST('''+convert(varchar(25), tblHorizontalPartitions.[to], 120)+'''as datetime))
 				begin
 					return;
@@ -56,7 +56,7 @@ BEGIN
 				')
 				begin '+
 					dbo.pms_shard_pms_tblPmsX_select_get(tblHorizontalPartitions.[tableName], '#tempPms')+
-				'end'
+				' end '
 			end) 
         from tblHorizontalPartitions order by tblHorizontalPartitions.[from] desc
         for xml path(''), type
