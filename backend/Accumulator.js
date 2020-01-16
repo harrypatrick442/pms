@@ -45,7 +45,6 @@ module.exports = function(params){
 			console.log([message[S.USER_ID_FROM], message[S.USER_ID_TO], new Date(), message[S.CONTENT]]);
 			table.rows.add(message[S.USER_ID_FROM], message[S.USER_ID_TO], new Date(), message[S.CONTENT]);
 		});
-		return;
 		dalPmsShard.add(table).then(()=>{
 			sendToDevices(currentList);
 		}).catch((err)=>{
