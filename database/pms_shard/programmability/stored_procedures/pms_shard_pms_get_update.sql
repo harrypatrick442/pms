@@ -34,6 +34,9 @@ BEGIN
 	set @userIdHighest  =   @userId2;
 	set @userIdLowest  =@userId1;
 	end
+	if(@toExclusive is null) begin
+	@toExclusive = @now;
+	end
 	declare @insertedFromInclusive datetime = DATEADD(MINUTE,-3,@fromInclusive);
 	declare @insertedToExclusive datetime =@toExclusive;';
 	declare @doSelect varchar(max) = '
