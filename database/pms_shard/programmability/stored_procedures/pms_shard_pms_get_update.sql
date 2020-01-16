@@ -36,7 +36,7 @@ BEGIN
 	end
 	declare @insertedFromInclusive datetime = DATEADD(MINUTE,-3,@fromInclusive);
 	declare @insertedToExclusive datetime =@toExclusive;';
-	declare @doReturn varchar(max) = '
+	declare @doSelect varchar(max) = '
 	select [clientAssignedUuid] as /*<S_CLIENT_ASSIGNED_UUID>*/''clientAssignedUuid''/*<S_CLIENT_ASSIGNED_UUID>*/,
 	[content] as /*<S_CONTENT>*/''content''/*<S_CONTENT>*/,
 	[sentAt] as /*<S_SENT_AT>*/''sentAt''/*<S_SENT_AT>*/, 
@@ -53,7 +53,7 @@ BEGIN
 					dbo.pms_shard_pms_tblPmsX_select_get(tblHorizontalPartitions.[tableName], '#tempPms')+
 				' end
 				if(@insertedFromInclusive >= CAST('''+convert(varchar(25), tblHorizontalPartitions.[to], 120)+'''as datetime))
-				begin '+@doReturn+'
+				begin '+@doSelect+'
 					return;
 				end;'
 			else
