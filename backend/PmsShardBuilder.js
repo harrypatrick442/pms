@@ -7,6 +7,7 @@ module.exports = new (function(params){
 	const Core = require('core');
 	const Iterator = Core.Iterator;
 	const Shard= require('./Shard');
+	const Settings = require('./Settings');
 	const PMS_SHARD=path.join(__dirname, '../database/pms_shard/programmability/'),
 	PMS_SHARD_STORED_PROCEDURES=PMS_SHARD+'stored_procedures/',
 	PMS_SHARD_SCALAR_FUNCTIONS=PMS_SHARD+'scalar_functions/',
@@ -61,12 +62,15 @@ module.exports = new (function(params){
 	};
 	function createShard(databaseConfiguration, shardHost, userIdFromInclusive, userIdToExclusive){
 		return new Promise((resolve, reject)=>{
-			resolve(new Shard({
-				userIdFromInclusive:userIdFromInclusive,
-				userIdToExclusive:userIdToExclusive,
-				databaseConfiguration:databaseConfiguration,
-				shardHost:shardHost
-			}));
+			Settings.get().then((settings)=>{
+				resolve(new Shard({
+					userIdFromInclusive:userIdFromInclusive,
+					userIdToExclusive:userIdToExclusive,
+					databaseConfiguration:databaseConfiguration,
+					shardHost:shardHost,
+					settings:settings
+				}));
+			}).catch(reject);
 		});
 	}
 })();
