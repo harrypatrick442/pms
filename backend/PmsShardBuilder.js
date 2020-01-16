@@ -51,16 +51,18 @@ module.exports = new (function(params){
 		if(!userIdFromInclusive)throw new Error('No userIdFromInclusive provided');
 		const userIdToExclusive = params.userIdToExclusive;
 		if(!userIdToExclusive)throw new Error('No userIdToExclusive provided');
+		const sendToDevices = params.sendToDevices;
+		if(!sendToDevices)throw new Error('No sendToDevices provided');
 		return ShardBuilder.build({ 
 			shardHost : params.shardHost,
 			name : 'pms_'+userIdFromInclusive+'_'+userIdToExclusive,
 			programmablePaths:programmablePaths,
 			tables:tables,
 			tableTypes:tableTypes,
-			createShard:(databaseConfiguration, shardHost)=>{return createShard(databaseConfiguration, shardHost, userIdFromInclusive, userIdToExclusive);}
+			createShard:(databaseConfiguration, shardHost)=>{return createShard(databaseConfiguration, shardHost, userIdFromInclusive, userIdToExclusive, sendToDevices);}
 		});
 	};
-	function createShard(databaseConfiguration, shardHost, userIdFromInclusive, userIdToExclusive){
+	function createShard(databaseConfiguration, shardHost, userIdFromInclusive, userIdToExclusive, sendToDevices){
 		return new Promise((resolve, reject)=>{
 			Settings.get().then((settings)=>{
 				resolve(new Shard({
@@ -68,6 +70,7 @@ module.exports = new (function(params){
 					userIdToExclusive:userIdToExclusive,
 					databaseConfiguration:databaseConfiguration,
 					shardHost:shardHost,
+					sendToDevices:sendToDevices,
 					settings:settings
 				}));
 			}).catch(reject);

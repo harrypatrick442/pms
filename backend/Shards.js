@@ -218,6 +218,7 @@ module.exports = new(function(){
 				PmsShardBuilder.build({
 					userIdToExclusive:userIdToExclusive,
 					userIdFromInclusive:userIdFromInclusive,
+					sendToDevices:sendToDevices,
 					shardHost:shardHost
 				}).then((shard)=>{
 					DalPms.addShard(shard).then(()=>{
