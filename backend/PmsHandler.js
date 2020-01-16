@@ -19,7 +19,7 @@ module.exports = new(function(){
 			case S.ADD:
 				console.log(req);
 				var userIdTo = parseInt(req[S.USER_ID]);
-				Pms.add({[S.USER_ID_FROM]:parseInt(userIdFrom), [S.USER_ID_TO]:userIdTo, [S.SENT_AT]:getTime(), [S.CONTENT]:req[S.CONTENT]}, userIdFrom, userIdTo)
+				Pms.add({[S.USER_ID_FROM]:parseInt(userIdFrom), [S.USER_ID_TO]:userIdTo, [S.SENT_AT]:new Date(), [S.CONTENT]:req[S.CONTENT]}, userIdFrom, userIdTo)
 				.then(()=>{
 					callback({[S.TICKET]:req[S.TICKET], [S.SUCCESSFUL]:true });
 				})

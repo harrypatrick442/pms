@@ -48,6 +48,7 @@ var PmViewModel = function(params){
 	var _urlProvider;
 	getPms();
 	function setTypeBoxText(value){
+		if(value.length>640)value = value.substr(0,640);
 		typeBoxText = value;
 		changed(S.TYPE_BOX_TEXT, value);
 	}
