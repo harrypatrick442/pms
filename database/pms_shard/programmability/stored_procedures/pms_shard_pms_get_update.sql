@@ -45,7 +45,7 @@ BEGIN
 			(case when tblHorizontalPartitions.[to] is not null then
 				'and @insertedFromInclusive <= CAST('''+
 				convert(varchar(25), tblHorizontalPartitions.[to], 120)+'''as datetime))
-				begin '
+				begin '+
 					dbo.pms_shard_pms_tblPmsX_select_get(tblHorizontalPartitions.[tableName], '#tempPms')+
 				'end
 				if(@insertedFromInclusive >= CAST('''+convert(varchar(25), tblHorizontalPartitions.[to], 120)+'''as datetime))

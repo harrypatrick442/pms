@@ -23,7 +23,7 @@ module.exports = new(function(){
 	this.get = function(userIdFrom, userIdTo, fromInclusive, toExclusive){
 		return new Promise((resolve, reject)=>{
 			checkInitialized();
-			if(fromInclusive===null||fromInclusive===undefined)throw new Error('fromInclusive must be a valid date');
+			//if(fromInclusive===null||fromInclusive===undefined)throw new Error('fromInclusive must be a valid date');
 			Shards.getShardForUserIds(userIdFrom, userIdTo).then((shard)=>{
 				shard.get(userIdFrom, userIdTo, fromInclusive, toExclusive).then(resolve).catch(reject);
 			}).catch(reject);
