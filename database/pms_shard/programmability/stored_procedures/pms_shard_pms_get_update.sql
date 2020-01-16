@@ -37,7 +37,14 @@ BEGIN
 	if(@toExclusive is null) begin
 	 set @toExclusive =getdate();
 	end
-	declare @insertedFromInclusive datetime = DATEADD(MINUTE,-3,@fromInclusive);
+	declare @insertedFromInclusive datetime;
+	if(@fromInclusive is not null) begin
+	 set @insertedFromInclusive =DATEADD(MINUTE,-3,@fromInclusive);
+	end
+	else
+	begin
+		set @insertedFromInclusive =null;
+	end
 	declare @insertedToExclusive datetime =@toExclusive;';
 	declare @doSelect varchar(max) = '
 	select [clientAssignedUuid] as /*<S_CLIENT_ASSIGNED_UUID>*/''clientAssignedUuid''/*<S_CLIENT_ASSIGNED_UUID>*/,
@@ -47,15 +54,15 @@ BEGIN
 	
 	set @str +=STUFF((
         select 
-            'if(@insertedToExclusive > CAST('''+convert(varchar(25), tblHorizontalPartitions.[from], 120)+'''as datetime)
+            'if(@insertedToExclusive is null or @insertedToExclusive > CAST('''+convert(varchar(25), tblHorizontalPartitions.[from], 120)+'''as datetime)
 			 '+
 			(case when tblHorizontalPartitions.[to] is not null then
-				'and @insertedFromInclusive <= CAST('''+
+				'and @insertedFromInclusive is null or @insertedFromInclusive <= CAST('''+
 				convert(varchar(25), tblHorizontalPartitions.[to], 120)+'''as datetime))
 				begin '+
 					dbo.pms_shard_pms_tblPmsX_select_get(tblHorizontalPartitions.[tableName], '#tempPms')+
 				' end
-				if(@insertedFromInclusive >= CAST('''+convert(varchar(25), tblHorizontalPartitions.[to], 120)+'''as datetime))
+				if(@insertedFromInclusive is not null and @insertedFromInclusive >= CAST('''+convert(varchar(25), tblHorizontalPartitions.[to], 120)+'''as datetime))
 				begin '+@doSelect+'
 					return;
 				end;'

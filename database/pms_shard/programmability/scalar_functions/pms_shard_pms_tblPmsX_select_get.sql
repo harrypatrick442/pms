@@ -5,13 +5,13 @@ BEGIN
 declare @str varchar(max) ='insert into '+
 @temporaryTableNamePms +'([userIdHighest], [userIdLowest], [content], [sentAt], [from],[clientAssignedUuid]) select 
  [userIdHighest], [userIdLowest], [content], [sentAt], [from], [clientAssignedUuid] from  '
-+@tableName+' where '
-+@tableName+'.[insertedAt] >= @insertedFromInclusive and '
-+@tableName+'.[insertedAt] < @insertedToExclusive and '
++@tableName+' where (@insertedFromInclusive is null or '
++@tableName+'.[insertedAt] >= @insertedFromInclusive )and (@insertedToExclusive is null or '
++@tableName+'.[insertedAt] < @insertedToExclusive) and '
 +@tableName+'.[userIdLowest] = @userIdLowest and '
-+@tableName+'.[userIdHighest] = @userIdHighest and '
-+@tableName+'.[sentAt] >= @fromInclusive and '
-+@tableName+'.[sentAt] < @toExclusive';
++@tableName+'.[userIdHighest] = @userIdHighest and ( @fromInclusive is null or '
++@tableName+'.[sentAt] >= @fromInclusive )and (@toExclusive is null or '
++@tableName+'.[sentAt] < @toExclusive) order by [sentAt] desc ';
 return @str;
 END
 
