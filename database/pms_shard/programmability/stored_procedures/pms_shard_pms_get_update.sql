@@ -11,7 +11,7 @@ BEGIN
      DROP PROCEDURE dbo.pms_shard_pms_get';
 exec sp_executesql @str;
 	set @str='
-			ALTER Procedure pms_shard_pms_get(
+			CREATE Procedure pms_shard_pms_get(
  @userId1 int,
  @userId2 int,
  @fromInclusive datetime,
