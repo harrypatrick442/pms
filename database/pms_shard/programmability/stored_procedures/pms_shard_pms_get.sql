@@ -22,7 +22,7 @@ BEGIN
 	set @userIdHighest  =   @userId2;
 	set @userIdLowest  =@userId1;
 	end
-	declare @insertedFromInclusive datetime = DATEADD(MINUTE,-2,@fromInclusive);
+	declare @insertedFromInclusive datetime = DATEADD(MINUTE,-3,@fromInclusive);
 	declare @insertedToExclusive datetime =@toExclusive;if(@insertedToExclusive > CAST('2019-11-09 13:49:23'as datetime))
 			 begin 
 			 insert into #tempPms([userIdHighest], [userIdLowest], [content], [sentAt], [from]) select 

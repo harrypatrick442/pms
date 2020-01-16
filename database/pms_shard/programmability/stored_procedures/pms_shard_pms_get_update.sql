@@ -34,22 +34,30 @@ BEGIN
 	set @userIdHighest  =   @userId2;
 	set @userIdLowest  =@userId1;
 	end
-	declare @insertedFromInclusive datetime = DATEADD(MINUTE,-2,@fromInclusive);
+	declare @insertedFromInclusive datetime = DATEADD(MINUTE,-3,@fromInclusive);
 	declare @insertedToExclusive datetime =@toExclusive;';
 	
 	
 	set @str +=STUFF((
         select 
-            'if(@insertedToExclusive > CAST('''
-			+convert(varchar(25), tblHorizontalPartitions.[from], 120)+'''as datetime))
-			 begin 
+            'if(@insertedToExclusive > CAST('''+convert(varchar(25), tblHorizontalPartitions.[from], 120)+'''as datetime)
 			 '+
-			dbo.pms_shard_pms_tblPmsX_select_get(tblHorizontalPartitions.[tableName], '#tempPms')+
-	' end
-	 if(@insertedFromInclusive >= CAST('''+convert(varchar(25), tblHorizontalPartitions.[from], 120)+'''as datetime))
-	 begin
-	  return;
-	 end;'
+			(case when tblHorizontalPartitions.[to] is not null then
+				'and @insertedFromInclusive <= CAST('''+
+				convert(varchar(25), tblHorizontalPartitions.[to], 120)+'''as datetime))
+				begin '
+					dbo.pms_shard_pms_tblPmsX_select_get(tblHorizontalPartitions.[tableName], '#tempPms')+
+				'end
+				if(@insertedFromInclusive >= CAST('''+convert(varchar(25), tblHorizontalPartitions.[to], 120)+'''as datetime))
+				begin
+					return;
+				end;'
+			else
+				')
+				begin '
+					dbo.pms_shard_pms_tblPmsX_select_get(tblHorizontalPartitions.[tableName], '#tempPms')+
+				'end'
+			end) 
         from tblHorizontalPartitions
         for xml path(''), type
     ).value('.', 'varchar(max)'), 1, 0, '') ;
