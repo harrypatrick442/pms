@@ -21,6 +21,12 @@ module.exports = function(configuration){
 	};
 	this.get = function(title, userId1, userId2, fromInclusive, toExclusive){
 		return new Promise(function(resolve, reject){
+			console.log([
+					{name:USER_ID_1, value:userId1, type:sql.Int},
+					{name:USER_ID_2, value:userId2, type:sql.Int},
+					{name:FROM_INCLUSIVE, value:fromInclusive, type:sql.DateTime},
+					{name:TO_EXCLUSIVE, value:toExclusive, type:sql.DateTime}
+				]);
 			dal.query({storedProcedure:STORED_PROCEDURE_GET,
 				parameters:[
 					{name:USER_ID_1, value:userId1, type:sql.Int},
@@ -29,6 +35,7 @@ module.exports = function(configuration){
 					{name:TO_EXCLUSIVE, value:toExclusive, type:sql.DateTime}
 				]
 			}).then(function(result){
+				console.log(result.recordset);
 				resolve(result.recordset);
 			}).catch(reject);
 		});
