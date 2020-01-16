@@ -58,7 +58,7 @@ BEGIN
 					dbo.pms_shard_pms_tblPmsX_select_get(tblHorizontalPartitions.[tableName], '#tempPms')+
 				'end'
 			end) 
-        from tblHorizontalPartitions
+        from tblHorizontalPartitions order by tblHorizontalPartitions.[from] desc
         for xml path(''), type
     ).value('.', 'varchar(max)'), 1, 0, '') ;
 
