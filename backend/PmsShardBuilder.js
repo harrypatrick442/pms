@@ -32,7 +32,8 @@ module.exports = new (function(params){
 			new TableColumn({name:'from', type:TableColumnTypes.DATETIME, nullable:false}),
 			new TableColumn({name:'tableName', type:TableColumnTypes.VARCHAR, length:50, nullable:false}),
 			new TableColumn({name:'parentId', type:TableColumnTypes.INT, nullable:true}),
-			new TableColumn({name:'createdAt', type:TableColumnTypes.DATETIME, nullable:false})
+			new TableColumn({name:'createdAt', type:TableColumnTypes.DATETIME, nullable:false}),
+			new TableColumn({name:'to', type:TableColumnTypes.DATETIME, nullable:true})
 		]
 	});
 	const tableTypePms = new Table({

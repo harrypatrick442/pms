@@ -19,6 +19,7 @@ begin
 	begin
 	set @nextFrom = @now;
 	end
+	update tblHorizontalPartitions set [to]=@nextFrom where [id]=@parentId;
 end
  declare @tableName varchar(100) = 'tblPms_'+Format(@nextFrom, 'ddMMyyyy_HHmmss');
 
