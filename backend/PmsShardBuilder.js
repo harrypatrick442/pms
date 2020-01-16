@@ -42,7 +42,8 @@ module.exports = new (function(params){
 			new TableColumn({name:'userIdFrom', type:TableColumnTypes.INT, nullable:false}),
 			new TableColumn({name:'userIdTo', type:TableColumnTypes.INT, nullable:false}),
 			new TableColumn({name:'sentAt', type:TableColumnTypes.DATETIME, nullable:false}),
-			new TableColumn({name:'content', type:TableColumnTypes.VARCHAR, length:640, nullable:false})
+			new TableColumn({name:'content', type:TableColumnTypes.VARCHAR, length:640, nullable:false}),
+			new TableColumn({name:'clientAssignedUuid', type:TableColumnTypes.UNIQUE_IDENTIFIER, nullable:false})
 		]
 	});
 	const tableTypes =[tableTypePms];

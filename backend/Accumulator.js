@@ -7,7 +7,7 @@ module.exports = function(params){
 	const settings = params.settings;
 	const dalPmsShard = params.dalPmsShard;
 	const sendToDevices = params.sendToDevices;
-	const CONTENT='content', USER_ID_FROM='userIdFrom', USER_ID_TO='userIdTo', SENT_AT='sentAt';
+	const CONTENT='content', USER_ID_FROM='userIdFrom', USER_ID_TO='userIdTo', SENT_AT='sentAt',CLIENT_ASSIGNED_UUID='clientAssignedUUID';
 	var list =[];
 	const maxNMessages = settings.getAccumulatorMaxNMessages();
 	if(!maxNMessages) throw new Error('maxNMessages not set in settings');
@@ -40,8 +40,9 @@ module.exports = function(params){
 		table.columns.add(USER_ID_TO,sql.Int);
 		table.columns.add(SENT_AT,sql.DateTime);
 		table.columns.add(CONTENT,sql.VarChar(640));
+		table.columns.add(CLIENT_ASSIGNED_HASH,sql.UniqueIdentifier);
 		currentList.forEach((message)=>{
-			table.rows.add(message[S.USER_ID_FROM], message[S.USER_ID_TO], message[S.SENT_AT], message[S.CONTENT]);
+			table.rows.add(message[S.USER_ID_FROM], message[S.USER_ID_TO], message[S.SENT_AT], message[S.CONTENT], message[S.CLIENT_ASSIGNED_UUID]);
 		});
 		dalPmsShard.add(table).then(()=>{
 			sendToDevices(currentList);

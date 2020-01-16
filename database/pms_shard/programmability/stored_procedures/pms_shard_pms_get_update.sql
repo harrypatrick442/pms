@@ -63,7 +63,8 @@ BEGIN
     ).value('.', 'varchar(max)'), 1, 0, '') ;
 
 	set @str+='
-	select [content] as /*<S_CONTENT>*/''content''/*<S_CONTENT>*/,
+	select [clientAssignedUuid] as /*<S_CLIENT_ASSIGNED_UUID>*/''clientAssignedUuid''/*<S_CLIENT_ASSIGNED_UUID>*/,
+	[content] as /*<S_CONTENT>*/''content''/*<S_CONTENT>*/,
 	[sentAt] as /*<S_SENT_AT>*/''sentAt''/*<S_SENT_AT>*/, 
 	[from] as /*<S_FROM>*/''from''/*<S_FROM>*/ from #tempPms;
 END';

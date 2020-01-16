@@ -19,14 +19,15 @@ Alter Procedure pms_shard_pms_add(
 AS
 BEGIN
 	declare @now datetime = GETDATE();
-	insert into '+@tableName+'([userIdHighest], [userIdLowest], [sentAt], [insertedAt], [from], [content]) 
+	insert into '+@tableName+'([userIdHighest], [userIdLowest], [sentAt], [insertedAt], [from], [content], [getClientAssignedUuid]) 
 	select 
 	(case when userIdFrom < userIdTo then userIdTo else userIdFrom end), 
 	(case when userIdFrom > userIdTo then userIdTo else userIdFrom end),
 	pms.[sentAt],
 	@now, 
 	userIdFrom,
-	pms.[content]
+	pms.[content],
+	pms.[clientAssignedUuid],
 	from @pms pms;
 END';
 exec sp_executesql @str;

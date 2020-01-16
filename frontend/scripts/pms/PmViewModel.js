@@ -100,8 +100,12 @@ var PmViewModel = function(params){
 				[S.PMS_TYPE]:S.ADD,
 				[S.CONTENT]:content,
 				[S.SESSION_ID]:getSessionId(),
+				[S.CLIENT_ASSIGNED_UUID]:getClientAssignedUuid(),
 				[S.USER_ID]:model[S.GET_USER_ID]()
 			},resolve,reject, TIMEOUT_SEND_ADD);
 		});
+	}
+	function getClientAssignedUuid(){
+		return UUID[S.V_4]();
 	}
 };

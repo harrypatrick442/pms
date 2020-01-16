@@ -29,7 +29,8 @@ declare @strCreateTable nvarchar(max) ='create table '+@tableName+'(
 	[content] [text] NOT NULL,
 	[sentAt] [datetime] NOT NULL,
 	[insertedAt] [datetime] NOT NULL,
-	[from] [int] NULL
+	[from] [int] NULL,
+	[clientAssignedUuid] [uniqueidentifier] NOT NULL
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]';
 exec sp_executesql @strCreateTable;
 declare @strCreateIndices nvarchar(max)='
