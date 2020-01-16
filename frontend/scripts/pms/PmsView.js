@@ -177,22 +177,17 @@ var PmsView = (function(){
 			var openViews = orderedItemsOpens[S.GET_VIEWS]();
 			var len = openViews.length;
 			var width = getOpensWidth();
-			console.log(width);
 			var doRest = false;
 			var toClose = [];
 			var firstBottom;
 			for(var i=0; i<len; i++){
 				var pmWindowView = openViews[i];
-				console.log(pmWindowView[S.GET_RIGHT]());
-				console.log(pmWindowView[S.GET_BOTTOM]());
 				var bottom;
 				if(doRest || ((pmWindowView[S.GET_RIGHT]()>width||(bottom=pmWindowView[S.GET_BOTTOM]())>firstBottom)&&(doRest=true))){
-					console.log('overflowing');
 					toClose.push(pmWindowView[S.GET_MODEL]());
 				}
 				if(firstBottom===undefined)firstBottom=bottom;
 			}
-			console.log(toClose);
 			if(toClose.length>0)model[S.CLOSE_OPENS](toClose);
 		}
 		function getOpensWidth(){

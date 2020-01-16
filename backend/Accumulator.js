@@ -33,7 +33,6 @@ module.exports = function(params){
 			throw new Error('Not a valid message');
 	}
 	function flush(){
-		console.log(' flush');
 		var currentList = list;
 		list=[];
 		var table = new sql.Table();

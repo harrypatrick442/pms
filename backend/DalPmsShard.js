@@ -11,16 +11,12 @@ module.exports = function(configuration){
 		return dal.query({storedProcedure:STORED_PROCEDURE_PMS_SHARD_UPDATE});
 	};
 	this.add = function(pms){
-		console.log('alling');
-		console.log(configuration.toJSON());
 		return new Promise(function(resolve, reject){
 			dal.query({storedProcedure:STORED_PROCEDURE_ADD,
 				parameters:[
 					{name:PMS, value:pms}				
 				]
-			}).then(function(result){
-				resolve(result.recordset);
-			}).catch(reject);
+			}).then(resolve).catch(reject);
 		});
 	};
 	this.get = function(title, userId){
