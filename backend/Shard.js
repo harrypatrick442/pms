@@ -45,8 +45,8 @@ function Shard(params){
 	this.add = function(message){
 		accumulator.add(message);
 	};
-	this.get = function(userIdFrom, userIdTo, fromInclusive, toExclusive){
-		return dalPmsShard.get(userIdFrom, userIdTo, fromInclusive, toExclusive);
+	this.get = function(userIdFrom, userIdTo, n, fromInclusive, toExclusive){
+		return dalPmsShard.get(userIdFrom, userIdTo, n, fromInclusive, toExclusive);
 	};
 	this.toJSON= function(){
 		return {

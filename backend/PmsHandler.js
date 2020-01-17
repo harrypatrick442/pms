@@ -5,12 +5,11 @@ module.exports = new(function(){
 	const getTime = Core.getTime;
 	const PmsLog = require('./PmsLog');
 	this.incoming = function(req, userIdFrom, callback){
-		console.log('incoming');
 		console.log(req);
 		switch(req[S.PMS_TYPE]){
 			case S.GET:
 				var userIdTo = parseInt(req[S.USER_ID]);
-				Pms.get(userIdFrom, userIdTo, req[S.FROM_INCLUSIVE], req[S.TO_EXCLUSIVE]).then((messages)=>{
+				Pms.get(userIdFrom, userIdTo, req[S.N], req[S.FROM_INCLUSIVE], req[S.TO_EXCLUSIVE]).then((messages)=>{
 					callback({[S.TICKET]:req[S.TICKET], [S.SUCCESSFUL]:true, [S.MESSAGES]:messages});
 				}).catch((err)=>{
 					PmsLog.error(err);

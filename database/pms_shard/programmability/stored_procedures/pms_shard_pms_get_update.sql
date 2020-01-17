@@ -15,7 +15,8 @@ exec sp_executesql @str;
  @userId1 int,
  @userId2 int,
  @fromInclusive datetime=null,
- @toExclusive datetime = null
+ @toExclusive datetime = null,
+ @n int=1000
 )
 AS
 BEGIN
@@ -45,7 +46,8 @@ BEGIN
 	begin
 		set @insertedFromInclusive =null;
 	end
-	declare @insertedToExclusive datetime =@toExclusive;';
+	declare @insertedToExclusive datetime =@toExclusive;
+	declare @nLeft int = @n;';
 	declare @doSelect varchar(max) = '
 	select [clientAssignedUuid] as /*<S_CLIENT_ASSIGNED_UUID>*/''clientAssignedUuid''/*<S_CLIENT_ASSIGNED_UUID>*/,
 	[content] as /*<S_CONTENT>*/''content''/*<S_CONTENT>*/,
@@ -72,6 +74,7 @@ BEGIN
 					dbo.pms_shard_pms_tblPmsX_select_get(tblHorizontalPartitions.[tableName], '#tempPms')+
 				' end '
 			end) 
+			+' set @nLeft = @n - (select count(*) from #tempPms); if(@nLeft<=0)begin return; end;'
         from tblHorizontalPartitions order by tblHorizontalPartitions.[from] desc
         for xml path(''), type
     ).value('.', 'varchar(max)'), 1, 0, '') ;

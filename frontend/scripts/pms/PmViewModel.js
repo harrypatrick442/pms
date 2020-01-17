@@ -79,10 +79,11 @@ var PmViewModel = function(params){
 		var url =urlProvider?urlProvider[S.GET_CURRENT]():null;
 		return url;
 	};
-	function getPms(toInclusive){
+	function getPms(n, toInclusive){
 		ticketedSend[S.SEND]({
 			[S.TYPE]:S.PMS,
 			[S.PMS_TYPE]:S.GET,
+			[S.N]:n,
 			[S.TO_INCLUSIVE]:toInclusive,
 			[S.SESSION_ID]:getSessionId(),
 			[S.USER_ID]:model[S.GET_USER_ID]()
