@@ -12,14 +12,14 @@ var PmView = (function(){
 		inner.classList.add('pm-inner');
 		var feed = E.DIV();
 		feed.classList.add('feed');
-		var orderedItemsFeed = new OrderedItems({
+		/*var orderedItemsFeed = new OrderedItems({
 			[S.ELEMENT]:feed,
 			[S.MODEL]:model,
 			[S.PROPERTY_NAME_ITEMS]:S.MESSAGES,
 			[S.CREATE_VIEW]:function(model){
 				return new PmMessageView({[S.MODEL]:model});
 			}
-		});
+		});*/
 		var menu = E.DIV();
 		menu.classList.add('menu');
 		var typeBox = E.DIV();
@@ -38,7 +38,7 @@ var PmView = (function(){
 			[S.IMAGE_SEMANTIC_HOVER]:S.PMS_EMOTICON_ICON_HOVER,
 			[S.CLASS_NAME]:'emoticons'
 		});
-		var controlsCollection = new ControlsCollection(buttonEmoticons, textBox, orderedItemsFeed, buttonClose);
+		var controlsCollection = new ControlsCollection(buttonEmoticons, textBox, buttonClose);
 		element.appendChild(inner);
 		inner.appendChild(feed);
 		inner.appendChild(typeBox);

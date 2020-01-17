@@ -8,6 +8,8 @@ var PmViewModel = function(params){
 	var model = params[S.MODEL];
 	var width, typeBoxText= '', typeBoxDisabled=false;
 	var propertyBindingExpanded = PropertyBinding[S.CARRY_OVER]( this, model, S.EXPANDED);
+	var pmMessagesViewModel = new PmMessagesViewModel({[S.MODEL]:model});
+	this[S.GET_MESSAGES]=pmMessagesViewModel[S.GET];
 	this[S.CLICKED_HEADING]=function(){
 		setExpanded(!getExpanded());
 	};
@@ -25,9 +27,6 @@ var PmViewModel = function(params){
 	}
 	this[S.GET_READ_ONLY]=function(){
 		return true;
-	};
-	this[S.GET_MESSAGES]=function(){
-		return [];
 	};
 	this[S.GET_TYPE_BOX_TEXT]=getTypeBoxText;
 	this[S.SET_TYPE_BOX_TEXT]=setTypeBoxText;
@@ -78,7 +77,7 @@ var PmViewModel = function(params){
 		var urlProvider = getUrlProvider();
 		var url =urlProvider?urlProvider[S.GET_CURRENT]():null;
 		return url;
-	};
+	};	
 	function getPms(n, toInclusive){
 		ticketedSend[S.SEND]({
 			[S.TYPE]:S.PMS,
@@ -89,6 +88,7 @@ var PmViewModel = function(params){
 			[S.USER_ID]:model[S.GET_USER_ID]()
 		}, function(res){
 			console.log(res);
+			pmMessagesViewModel[S.ADD_RANGE_RAW](res[S.MESSAGES]);
 		},function(){
 			
 		});
