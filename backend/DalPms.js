@@ -68,7 +68,7 @@ module.exports = new(function(){
 		return dal.query({
 				storedProcedure:STORED_PROCEDURE_SHARDS_DELETE,
 				parameters:[
-					{name:IDS, value:shardIds,type:sql.Varchar(2000)}
+					{name:IDS, value:shardIds,type:sql.VarChar(2000)}
 				]
 			});
 	};
