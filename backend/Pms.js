@@ -25,6 +25,8 @@ module.exports = new(function(){
 			checkInitialized();
 			//if(fromInclusive===null||fromInclusive===undefined)throw new Error('fromInclusive must be a valid date');
 			Shards.getShardForUserIds(userIdFrom, userIdTo).then((shard)=>{
+				console.log('n is: ');
+				console.log(n);
 				shard.get(userIdFrom, userIdTo, n, fromInclusive, toExclusive).then(resolve).catch(reject);
 			}).catch(reject);
 		});

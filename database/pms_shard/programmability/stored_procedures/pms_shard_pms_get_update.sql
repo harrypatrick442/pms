@@ -74,7 +74,9 @@ BEGIN
 					dbo.pms_shard_pms_tblPmsX_select_get(tblHorizontalPartitions.[tableName], '#tempPms')+
 				' end '
 			end) 
-			+' set @nLeft = @n - (select count(*) from #tempPms); if(@nLeft<=0)begin return; end;'
+			+' set @nLeft = @n - (select count(*) from #tempPms); if(@nLeft<=0)begin '+@doSelect+'
+					return;
+				end;'
         from tblHorizontalPartitions order by tblHorizontalPartitions.[from] desc
         for xml path(''), type
     ).value('.', 'varchar(max)'), 1, 0, '') ;

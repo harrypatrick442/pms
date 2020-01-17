@@ -46,7 +46,7 @@ var PmViewModel = function(params){
 	};
 	PropertyBinding[S.CARRY_OVER](this, model, S.USERNAME, S.TITLE);
 	var _urlProvider;
-	getPms();
+	getPms(7);
 	function setTypeBoxText(value){
 		if(value.length>640)value = value.substr(0,640);
 		typeBoxText = value;
