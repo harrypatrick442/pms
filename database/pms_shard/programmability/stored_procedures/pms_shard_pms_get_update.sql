@@ -56,10 +56,13 @@ BEGIN
 	
 	set @str +=STUFF((
         select 
-            'if(@insertedToExclusive is null or @insertedToExclusive > CAST('''+convert(varchar(25), tblHorizontalPartitions.[from], 120)+'''as datetime)
-			 '+
 			(case when tblHorizontalPartitions.[to] is not null then
-				'and @insertedFromInclusive is null or @insertedFromInclusive <= CAST('''+
+				
+			' set @nLeft = @n - (select count(*) from #tempPms); if(@nLeft<=0)begin '+@doSelect+'
+					return;
+			end;
+			if(@insertedToExclusive is null or @insertedToExclusive > CAST('''+convert(varchar(25), tblHorizontalPartitions.[from], 120)+'''as datetime)
+			 and @insertedFromInclusive is null or @insertedFromInclusive <= CAST('''+
 				convert(varchar(25), tblHorizontalPartitions.[to], 120)+'''as datetime))
 				begin '+
 					dbo.pms_shard_pms_tblPmsX_select_get(tblHorizontalPartitions.[tableName], '#tempPms')+
@@ -69,14 +72,12 @@ BEGIN
 					return;
 				end;'
 			else
-				')
+				'if(@insertedToExclusive is null or @insertedToExclusive > CAST('''+convert(varchar(25), tblHorizontalPartitions.[from], 120)+'''as datetime)
+				)
 				begin '+
 					dbo.pms_shard_pms_tblPmsX_select_get(tblHorizontalPartitions.[tableName], '#tempPms')+
 				' end '
 			end) 
-			+' set @nLeft = @n - (select count(*) from #tempPms); if(@nLeft<=0)begin '+@doSelect+'
-					return;
-				end;'
         from tblHorizontalPartitions order by tblHorizontalPartitions.[from] desc
         for xml path(''), type
     ).value('.', 'varchar(max)'), 1, 0, '') ;
