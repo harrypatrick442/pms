@@ -6,10 +6,11 @@ var PmViewModel = function(params){
 	var ticketedSend = params[S.TICKETED_SEND];
 	var changed = bindingsHandler[S.CHANGED];
 	var model = params[S.MODEL];
+	var userId = model[S.GET_USER_ID]();
 	var width, typeBoxText= '', typeBoxDisabled=false;
 	var propertyBindingExpanded = PropertyBinding[S.CARRY_OVER]( this, model, S.EXPANDED);
-	var pmMessagesViewModel = new PmMessagesViewModel({[S.MODEL]:model});
-	this[S.GET_MESSAGES]=pmMessagesViewModel[S.GET];
+	var pmMessagesViewModel = new PmMessagesViewModel({[S.MODEL]:model, [S.USER_ID]:userId});
+	this[S.GET_PM_MESSAGES]=function(){ return pmMessagesViewModel;};
 	this[S.CLICKED_HEADING]=function(){
 		setExpanded(!getExpanded());
 	};

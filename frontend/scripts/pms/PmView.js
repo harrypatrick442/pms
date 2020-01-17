@@ -10,8 +10,9 @@ var PmView = (function(){
 		element.classList.add('pm');
 		var inner = E.DIV();
 		inner.classList.add('pm-inner');
-		var feed = E.DIV();
-		feed.classList.add('feed');
+		var pmMessagesView = new PmMessagesView(model[S.GET_PM_MESSAGES]());
+		//var feed = E.DIV();
+		//feed.classList.add('feed');
 		/*var orderedItemsFeed = new OrderedItems({
 			[S.ELEMENT]:feed,
 			[S.MODEL]:model,
@@ -40,7 +41,7 @@ var PmView = (function(){
 		});
 		var controlsCollection = new ControlsCollection(buttonEmoticons, textBox, buttonClose);
 		element.appendChild(inner);
-		inner.appendChild(feed);
+		inner.appendChild(pmMessagesView[S.GET_ELEMENT]());
 		inner.appendChild(typeBox);
 		typeBox.appendChild(textBox[S.GET_ELEMENT]());
 		inner.appendChild(menu);
