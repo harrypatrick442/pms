@@ -29,7 +29,11 @@ module.exports = new(function(){
 			});
 		});
 	};
-	this.getShardForHighestUserId = getShardForHighestUserId;
+	this.getShardForUserSpecific= function(userId){
+		userId = parseInt(userId);
+		if(isNaN(userId))throw new Error('Invalid user id '+userId);
+		return getShardForHighestUserId(userId);
+	};
 	function parseUserIds(userId1, userId2){
 		userId1Parsed = parseInt(userId1);
 		userId2Parsed = parseInt(userId2);
@@ -149,8 +153,6 @@ module.exports = new(function(){
 		});
 	}
 	function createNextShardFromRemote(msg, channel){
-		console.log('hi');
-		console.log(msg);
 		if(!initialized){
 			error('Not Initialized');
 			return;
