@@ -1,0 +1,50 @@
+fawfawf(22:26)
+our e-systems will create an account for him
+
+fawfawf(22:26)
+2) every time user tries to use some service they have to e-login
+
+fawfawf(22:26)
+e-verify is one time process
+
+fawfawf(22:26)
+with government ID for a start
+
+fawfawf(22:26)
+then e-login
+
+fawfawf(22:27)
+maybe with chip, maybe with preinstalled software, maybe with fingerprint
+
+fawfawf(22:27)
+something to let them log in
+
+fawfawf(22:27)
+its their choice, we will release an array, tell them pros and cons
+
+fawfawf(22:27)
+and we will basically abstract all the security to ourselves
+
+fawfawf(22:27)
+they'll have it dead simple
+
+fawfawf(22:27)
+most people are computer illiterate, i don't want to change that
+
+fawfawf(22:27)
+and long term you can have e-net shops on the streets
+
+fawfawf(22:28)
+where people go in, we can verify them, change their settings
+
+fawfawf(22:28)
+its like, you can't hack a system not connected to the internet (in any way, not even indirectly)
+
+fawfawf(22:28)
+only way is to nuke the server facilities haha
+
+SoftwareEngineer(22:28)
+sorry back
+
+fawfawf(22:29)
+all good
