@@ -16,6 +16,7 @@ module.exports = new (function(){
 	this.has = itemRouter.hasItem;
 	this.add=itemRouter.addItem;
 	this.remove = itemRouter.removeItem;
+	this.getItemType = itemRouter.getItemType;
 	this.setPmsUserStateCache = function(value){
 		pmsUserStateCache=value;
 	};
@@ -24,14 +25,14 @@ module.exports = new (function(){
 		return pmsUserStateCache.getLocalIds();
 	}
 	function incoming(msg, channel, itemId){
-		//validateHasAndSendRoutingTableIfNecessary(itemId);
+		validateHasAndSendRoutingTableIfNecessary(itemId);
 		dispatchOnMessage(msg, channel);
 	}
-	function validateHasAndSendRoutingTableIfNecessary(itemId, channel){
+	/*function validateHasAndSendRoutingTableIfNecessary(itemId, channel){
 		if(!itemId)return;
 		if(pmsUserStateCache.hasLocal(itemId))return;
 		itemRouter.sendRoutingTable(channel.getIp());
-	}
+	}*/
 	function dispatchOnMessage(msg, channel){
 		self.dispatchEvent({type:MESSAGE, msg:msg, channel:channel.getPublic()});
 	}

@@ -11,14 +11,16 @@ DalPms.getShards(()=>{ throw new Error('Should not ba calling');}).then((shards)
 	next();
 	function next(){
 		if(!iteratorShards.hasNext()){
-			DalPms.deleteShards(shards.select(shard=>shard.getId()).toList()).then(()=>{
-				console.log('done')
-				process.exit();
-			}).catch(error);
+			console.log('done');
+			process.exit();
 			return;
 		}
 		var shard = iteratorShards.next();
-		DalDatabases.deleteDatabase(shard.getShardHost().getDatabaseConfiguration(), shard.getName()).then(next).catch(error);
+		DalDatabases.deleteDatabase(shard.getShardHost().getDatabaseConfiguration(), shard.getName()).then(()=>{
+			DalPms.deleteShards([shard.getId()]).then(()=>{
+				next();
+			}).catch(error);
+		}).catch(error);
 	}
 }).catch(error);
 function error(err){
