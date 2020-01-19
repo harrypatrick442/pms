@@ -1,5 +1,5 @@
 const STORED_PROCEDURE_ADD= 'pms_shard_pms_add', STORED_PROCEDURE_GET= 'pms_shard_pms_get';
-const STORED_PROCEDURE_PMS_SHARD_UPDATE='pms_shard_update';
+const STORED_PROCEDURE_PMS_SHARD_UPDATE='pms_shard_update', STORED_PROCEDURE_USER_STATE_SET='pms_shard_user_state_set';
 const Dal = require('dal');	
 const sql = Dal.sql;
 const Core = require('core');
@@ -17,6 +17,14 @@ module.exports = function(configuration){
 					{name:PMS, value:pms}				
 				]
 			}).then(resolve).catch(reject);
+		});
+	};
+	this.setUserState = function(userId, pmsUserState){
+		dal.query({storedProcedure:STORED_PROCEDURE_USER_STATE_SET,
+			parameters:[
+				{name:USER_ID, value:userId, type:sql.Int},
+				{name:USER_ID, value:userId, type:sql.}
+			]
 		});
 	};
 	this.get = function(userId1, userId2, n, fromInclusive, toExclusive){

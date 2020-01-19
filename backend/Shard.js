@@ -48,6 +48,9 @@ function Shard(params){
 	this.get = function(userIdFrom, userIdTo, n, fromInclusive, toExclusive){
 		return dalPmsShard.get(userIdFrom, userIdTo, n, fromInclusive, toExclusive);
 	};
+	this.setUserState = function(userId, pmUserState){
+		return dalPmsShard.setUsetState(userId, pmUserState);
+	};
 	this.toJSON= function(){
 		return {
 			id:params.id,

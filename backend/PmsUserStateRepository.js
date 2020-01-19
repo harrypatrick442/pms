@@ -1,8 +1,8 @@
 const S = require('strings').S;
+const DalPms = require('./DalPms');
+const Shards = require('./Shards');
+const Client = require('client');
 module.exports = new(function(){ 
-	const DalPms = require('./DalPms');
-	const Shards = require('./Shards');
-	const Client = require('client');
 	
 	var cache = new Cache({
 		name:'Pms User State Cache',
@@ -12,7 +12,7 @@ module.exports = new(function(){
 		router:PmsUserStateRouter,
 		provideRemote:false
 	});
-	ProfilesRouter.setProfilesCache(cache);
+	ProfilesRouter.setPmsUserStateCache(cache);
 	this.getByUserIdRaw = function(userId){
 		return cache.getById(userId);
 	};
