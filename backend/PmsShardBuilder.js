@@ -42,6 +42,17 @@ module.exports = new (function(params){
 			new TableColumn({name:'to', type:TableColumnTypes.DATETIME, nullable:true})
 		]
 	});
+	const tblPms= new Table({
+		name:'tblPms',
+		columns:[
+			new TableColumn({name:'userIdLowest', type:TableColumnTypes.INT, nullable:false}),
+			new TableColumn({name:'userIdHighest', type:TableColumnTypes.INT, nullable:false}),
+			new TableColumn({name:'content', type:TableColumnTypes.TEXT, nullable:false}),
+			new TableColumn({name:'sentAt', type:TableColumnTypes.DATETIME, nullable:false}),
+			new TableColumn({name:'from', type:TableColumnTypes.INT, nullable:false}),
+			new TableColumn({name:'clientAssignedUuid', type:TableColumnTypes.GUID, nullable:false})
+		]
+	});
 	const tblUserStatesOpens= new Table({
 		name:'tblUserStatesOpens',
 		columns:[
