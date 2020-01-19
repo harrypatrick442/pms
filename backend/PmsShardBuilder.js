@@ -36,6 +36,22 @@ module.exports = new (function(params){
 			new TableColumn({name:'to', type:TableColumnTypes.DATETIME, nullable:true})
 		]
 	});
+	const tblUserStatesOpens= new Table({
+		name:'tblUserStatesOpens',
+		columns:[
+			new TableColumn({name:'userId', type:TableColumnTypes.INT, nullable:false}),
+			new TableColumn({name:'otherUserId', type:TableColumnTypes.INT, nullable:false}),
+			new TableColumn({name:'expanded', type:TableColumnTypes.BIT, nullable:false})
+		]
+	});
+	const tblLastSeens= new Table({
+		name:'tblLastSeens',
+		columns:[
+			new TableColumn({name:'userIdLowest', type:TableColumnTypes.INT, nullable:false}),
+			new TableColumn({name:'userIdHighest', type:TableColumnTypes.INT, nullable:false}),
+			new TableColumn({name:'lastSeen', type:TableColumnTypes.UNIQUE_IDENTIFIER, nullable:true})
+		]
+	});
 	const tableTypePms = new Table({
 		name:'Pms',
 		columns:[
@@ -46,8 +62,15 @@ module.exports = new (function(params){
 			new TableColumn({name:'clientAssignedUuid', type:TableColumnTypes.UNIQUE_IDENTIFIER, nullable:false})
 		]
 	});
-	const tableTypes =[tableTypePms];
-	const tables =[tblHorizontalPartitions];
+	const tableTypeUserStateOpen = new Table({
+		name:'UserStateOpens',
+		columns:[
+			new TableColumn({name:'otherUserId', type:TableColumnTypes.INT, nullable:false}),
+			new TableColumn({name:'expanded', type:TableColumnTypes.BIT, nullable:false})
+		]
+	});
+	const tableTypes =[tableTypePms, tableTypeUserStateOpen, tblLastSeens];
+	const tables =[tblHorizontalPartitions, tblUserStatesOpens];
 	this.build = function(params){
 		const userIdFromInclusive = params.userIdFromInclusive;
 		if(!userIdFromInclusive)throw new Error('No userIdFromInclusive provided');

@@ -49,10 +49,13 @@ BEGIN
 	declare @insertedToExclusive datetime =@toExclusive;
 	declare @nLeft int = @n;';
 	declare @doSelect varchar(max) = '
-	select [clientAssignedUuid] as /*<S_CLIENT_ASSIGNED_UUID>*/''clientAssignedUuid''/*<S_CLIENT_ASSIGNED_UUID>*/,
+	select (select [clientAssignedUuid] as /*<S_CLIENT_ASSIGNED_UUID>*/''clientAssignedUuid''/*<S_CLIENT_ASSIGNED_UUID>*/,
 	[content] as /*<S_CONTENT>*/''content''/*<S_CONTENT>*/,
 	[sentAt] as /*<S_SENT_AT>*/''sentAt''/*<S_SENT_AT>*/, 
-	[from] as /*<S_FROM>*/''from''/*<S_FROM>*/ from #tempPms order by [sentAt] asc';
+	[from] as /*<S_FROM>*/''from''/*<S_FROM>*/ from #tempPms order by [sentAt] asc
+			for JSON path
+			)
+			as pms;';
 	
 	set @str +=STUFF((
         select 
