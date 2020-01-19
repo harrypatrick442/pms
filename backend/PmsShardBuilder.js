@@ -18,6 +18,7 @@ module.exports = new (function(params){
 	PMS_SHARD_HORIZONTAL_PARTITIONS_CREATE=PMS_SHARD_STORED_PROCEDURES+'pms_shard_horizontal_partitions_create.sql',
 	PMS_SHARD_PMS_ADD_UPATE=PMS_SHARD_STORED_PROCEDURES+'pms_shard_pms_add_update.sql',
 	PMS_SHARD_PMS_GET_UPDATE=PMS_SHARD_STORED_PROCEDURES+'pms_shard_pms_get_update.sql',
+	MYSQL_PMS_SHARD_PMS_GET=MYSQL_PMS_SHARD_STORED_PROCEDURES+'pms_shard_pms_get.sql',
 	PMS_SHARD_UPDATE =PMS_SHARD_STORED_PROCEDURES+'pms_shard_update.sql',
 	PMS_SHARD_TBLPMS_TABLENAMES_GET_BY_DATE_RANGE=PMS_SHARD_SCALAR_FUNCTIONS+'pms_shard_tblPms_tableNames_get_by_date_range.sql',
 	PMS_SHARD_TBLPMS_TABLENAME_LATEST_GET=PMS_SHARD_SCALAR_FUNCTIONS+'pms_shard_tblPms_tableName_latest_get.sql',
