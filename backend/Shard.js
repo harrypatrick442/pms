@@ -10,13 +10,18 @@ function Shard(params){
 	const shardHost = params.shardHost;
 	const settings = params.settings;
 	const sendToDevices = params.sendToDevices;
+	const overflow = params.overflow;
+	const databaseType = params.databaseType;
 	if(!shardHost)throw new Error('No shardHost');
 	if(!userIdFromInclusive)throw new Error('No userIdFromInclusive provied');
 	if(!userIdToExclusive)throw new Error('No userIdToExclusive provied');
 	if(!databaseConfiguration)throw new Error('No databaseConfiguration provied');
 	if(!settings)throw new Error('No settings provied');
 	if(!sendToDevices)throw new Error('No sendToDevices provied');
-	const dalPmsShard = new DalPmsShard(databaseConfiguration);
+	if(!overflow)throw new Error('No overflow provided');
+	if(!databaseType)throw new Error('No databaseType provied');
+	
+	const dalPmsShard = databaseType===DatabaseTypes.SQL?new DalPmsShardSql(databaseConfiguration):new DalPmsShardMysql(databaseConfiguration);
 	const accumulator = new Accumulator({
 		settings:settings,
 		dalPmsShard:dalPmsShard,
@@ -44,6 +49,9 @@ function Shard(params){
 	};
 	this.add = function(message){
 		accumulator.add(message);
+	};
+	this.set = function(userId1, userId2, messages){
+		return dalPmsShard.set(userId2, userId2, messages);
 	};
 	this.get = function(userIdFrom, userIdTo, n, fromInclusive, toExclusive){
 		return dalPmsShard.get(userIdFrom, userIdTo, n, fromInclusive, toExclusive);
