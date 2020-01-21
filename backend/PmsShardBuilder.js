@@ -3,11 +3,10 @@ module.exports = new (function(params){
 	const PmsLog = require('./PmsLog');
 	const Dal = require('dal');
 	const {DalDatabases, ShardBuilder, Table, TableColumn, TableColumnTypes} = Dal;
-	console.log(TableColumnTypes);
 	const Core = require('core');
 	const Iterator = Core.Iterator;
 	const Shard= require('./Shard');
-	const Settings = require('./Settings');
+	const checkParamsConfiguration = require('./checkParamsConfiguration');
 	const PMS_SHARD=path.join(__dirname, '../database/sql/pms_shard/programmability/'),
 	MYSQL_PMS_SHARD=path.join(__dirname, '../database/mysql/pms_shard/programmability/'),
 	PMS_SHARD_STORED_PROCEDURES=PMS_SHARD+'stored_procedures/',
@@ -96,17 +95,16 @@ module.exports = new (function(params){
 	
 	this.build = function(params){
 		const databaseType = params.databaseType;
-		if(databaseType===undefined||databaseType===null)throw new Error('No databaseType provided');
 		const overflowing = params.overflowing;
-		if(overflowing===undefined||overflowing===null)throw new Error('No overflowing not provided');
-		
-		if(databaseType===DatabaseTypes.SQL?overflowing:!overflowing)throw new Error('Invalid combination overflowing:'+overflowing+', databaseType:'+databaseType);
+		checkParamsConfigurations(params);
 		const userIdFromInclusive = params.userIdFromInclusive;
 		if(!userIdFromInclusive)throw new Error('No userIdFromInclusive provided');
 		const userIdToExclusive = params.userIdToExclusive;
 		if(!userIdToExclusive)throw new Error('No userIdToExclusive provided');
 		const sendToDevices = params.sendToDevices;
 		if(!sendToDevices)throw new Error('No sendToDevices provided');
+		const settings = params.settings;
+		if(!settings)throw new Error('No settings provided');
 		var isSql=databaseType===DatabaseTypes.SQL;
 		return ShardBuilder.build({ 
 			shardHost : params.shardHost,
@@ -114,21 +112,19 @@ module.exports = new (function(params){
 			programmablePaths:isSql?programmablePathsSql:programmablePathsMysqlOverflowing,
 			tables:isSql?tablesSql:tablesMysqlOverflowing,
 			tableTypes:isSql?tableTypesSql:null,
-			createShard:(databaseConfiguration, shardHost)=>{return createShard(databaseConfiguration, shardHost, userIdFromInclusive, userIdToExclusive, sendToDevices);}
+			createShard:(databaseConfiguration, shardHost)=>{return createShard(databaseConfiguration, shardHost, userIdFromInclusive, userIdToExclusive, sendToDevices, settings);}
 		});
 	};
-	function createShard(databaseConfiguration, shardHost, userIdFromInclusive, userIdToExclusive, sendToDevices){
+	function createShard(databaseConfiguration, shardHost, userIdFromInclusive, userIdToExclusive, sendToDevices, settings){
 		return new Promise((resolve, reject)=>{
-			Settings.get().then((settings)=>{
-				resolve(new Shard({
-					userIdFromInclusive:userIdFromInclusive,
-					userIdToExclusive:userIdToExclusive,
-					databaseConfiguration:databaseConfiguration,
-					shardHost:shardHost,
-					sendToDevices:sendToDevices,
-					settings:settings
-				}));
-			}).catch(reject);
+			resolve(new Shard({
+				userIdFromInclusive:userIdFromInclusive,
+				userIdToExclusive:userIdToExclusive,
+				databaseConfiguration:databaseConfiguration,
+				shardHost:shardHost,
+				sendToDevices:sendToDevices,
+				settings:settings
+			}));
 		});
 	}
 })();

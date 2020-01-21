@@ -1,6 +1,5 @@
 const S = require('strings').S;
-module.exports = new(function(){ 
-	const DalPms = require('./DalPms');
+module.exports = new(function(){
 	const Shards = require('./Shards');
 	const Client = require('client');
 	const UsersRouter= Client.UsersRouter;

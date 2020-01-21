@@ -5,7 +5,8 @@ module.exports = new(function(){
 	const Iterator = Core.Iterator;
 	Core.Linq;
 	const S = require('strings').S;
-	const DalPms = require('./DalPms');
+	const DalPmsSql = require('./DalPmsSql');
+	const DalPmsMysql = require('./DalPmsMysql');
 	const HostHelper = require('hosts').HostHelper;
 	const ShardHostHelper = require('./ShardHostHelper');
 	const Router = require('interserver_communication').Router;
@@ -16,7 +17,10 @@ module.exports = new(function(){
 	const PmsShardBuilder= require('./PmsShardBuilder');
 	const Shard = require('./Shard');
 	const PmsLog = require('./PmsLog');
-	var shards, shardsCreator, sendToDevices, createNextShardsLifespan, shardHosts, mapIdToShard=new Map(), overflow, databaseType;
+	const Dal = require('dal');
+	const DatabaseTypes = Dal.DatabaseTypes;
+	const checkParamsConfiguration = require('./checkParamsConfiguration');
+	var settings, shards, shardsCreator, sendToDevices, createNextShardsLifespan, shardHosts, mapIdToShard=new Map(), overflow, databaseType, DalPms, shardHostHelper;
 	this.initialize = initialize;
 	this.getShardForUserIds=function(userId1In, userId2In){
 		return new Promise((resolve, reject)=>{
@@ -46,18 +50,20 @@ module.exports = new(function(){
 			if(initialized)throw new Error('Already initialized');
 			const databaseConfiguration=params.databaseConfiguration;
 			sendToDevices = params.sendToDevices;
-			overflow = params.overflow;
+			overflowing = params.overflowing;
 			databaseType = params.databaseType;
-			if(!overflow)throw new Error('No overflow provided');
-			if(!databaseType)throw new Error('No databaseType provied');
+			DalPms = databaseType===DatabaseTypes.SQL?DalPmsSql:DalPmsMysql;
+			shardHostHelper = new ShardHostHelper(DalPms);
+			checkParamsConfiguration(params);
 			console.log(sendToDevices);
 			DalPms.initialize(databaseConfiguration);
-			Settings.get().then((settings)=>{
+			DalPms.getSettings().then((settingsIn)=>{
+				settings = settingsIn;
 				HostHelper.getHostMe().then((hostMe)=>{ 
-					ShardHostHelper.get().then((shardHostsIn)=>{
+					shardHostHelper.get().then((shardHostsIn)=>{
 						shardHosts = shardHostsIn;
 						shardsCreator = hostMe.getId()===settings.getHostIdShardCreator();
-						DalPms.getShards(sendToDevices).then((shardsIn)=>{
+						DalPms.getShards(sendToDevices, shardHostHelper, settings).then((shardsIn)=>{
 							shards = shardsIn;
 							shards.forEach((shard)=>{
 								mapIdToShard.set(shard.getId(),shard);
@@ -106,21 +112,19 @@ module.exports = new(function(){
 	}
 	function createNextShardsRemote(userIdHighest){
 		return new Promise((resolve, reject)=>{
-			Settings.get().then((settings)=>{
-				var channel = Router.getChannelForHostId(settings.getHostIdShardCreator());
-				if(!channel)throw new Error('Could not get the channel for the shard creator');
-				TicketedSend.sendWithPromise(channel, {
-					type:S.CREATE_NEXT_SHARD,
-					userIdHighest:userIdHighest,
-					myNextUserIdFromInclusive:getNextShardUserIdFromInclusive()
-				}, 10000).then((res)=>{
-					console.log(res);
-					if(!res.successful){
-						throw new Error('Error creating shard on remote machine');
-						return;
-					}
-					addShardsFromJObjectsIfDontExist(res.shards).then(resolve).catch(reject);
-				}).catch(reject);
+			var channel = Router.getChannelForHostId(settings.getHostIdShardCreator());
+			if(!channel)throw new Error('Could not get the channel for the shard creator');
+			TicketedSend.sendWithPromise(channel, {
+				type:S.CREATE_NEXT_SHARD,
+				userIdHighest:userIdHighest,
+				myNextUserIdFromInclusive:getNextShardUserIdFromInclusive()
+			}, 10000).then((res)=>{
+				console.log(res);
+				if(!res.successful){
+					throw new Error('Error creating shard on remote machine');
+					return;
+				}
+				addShardsFromJObjectsIfDontExist(res.shards).then(resolve).catch(reject);
 			}).catch(reject);
 		});
 	}
@@ -150,7 +154,7 @@ module.exports = new(function(){
 				resolve(shard);
 				return;
 			};
-			Shard.fromJSON(jObject, sendToDevices).then((shard)=>{
+			Shard.fromJSON(jObject, sendToDevices, shardHostHelper, settings).then((shard)=>{
 				addShard(shard);
 				resolve(shard);
 			}).catch(reject);
@@ -209,15 +213,12 @@ module.exports = new(function(){
 			}
 			createNextShardsLifespan=new CreateNextShardsLifespan(createNextShardsCallback, userIdHighest);
 			var userIdFromInclusive = getNextShardUserIdFromInclusive();
-			var shardSize;
-			Settings.get().then((settings)=>{
-				shardSize = settings.getShardSize();
-				if(userIdFromInclusive+(shardSize*settings.getMaxNShardsCreateAtOnce())<=userIdHighest){
-					error(new Error('Trying  to create too many shards at once. Might be someone doing it on purpose'));
-					return;
-				}
-				next();
-			}).catch(reject);
+			var shardSize = settings.getShardSize();
+			if(userIdFromInclusive+(shardSize*settings.getMaxNShardsCreateAtOnce())<=userIdHighest){
+				error(new Error('Trying  to create too many shards at once. Might be someone doing it on purpose'));
+				return;
+			}
+			next();
 			function next(){
 				var userIdToExclusive = userIdFromInclusive + shardSize
 				var shardHost = pickShardHostForNextShard();
@@ -227,7 +228,8 @@ module.exports = new(function(){
 					sendToDevices:sendToDevices,
 					shardHost:shardHost,
 					overflow:overflow,
-					databaseType:databaseType
+					databaseType:databaseType,
+					settings:settings
 				}).then((shard)=>{
 					DalPms.addShard(shard).then(()=>{
 						addShard(shard);

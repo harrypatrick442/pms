@@ -1,7 +1,6 @@
 const Core = require('core');
 Core.Linq;
-const DalPms = require('./DalPms');
-module.exports = new(function(){
+module.exports = function(dalPms){
 	var _shardHosts;
 	var _mapIdToShardHost;
 	this.getById=function(hostId){
@@ -18,12 +17,11 @@ module.exports = new(function(){
 				resolve(_shardHosts);
 				return;
 			}
-			console.log(DalPms);
-			DalPms.getShardHosts().then((shardHosts)=>{
+			dalPms.getShardHosts().then((shardHosts)=>{
 				_mapIdToShardHost = shardHosts.toMap(shardHost=>shardHost.getHostId(), shardHost=>shardHost);
 				_shardHosts = shardHosts;
 				resolve(shardHosts);
 			});
 		});
 	};
-})();
+};
