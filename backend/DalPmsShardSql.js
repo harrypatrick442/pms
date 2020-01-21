@@ -21,7 +21,6 @@ module.exports = function(configuration){
 		});
 	};
 	this.setUserState = function(userId, userState){
-		
 		dal.query({storedProcedure:STORED_PROCEDURE_USER_STATE_SET,
 			parameters:[
 				{name:USER_ID, value:userId, type:sql.Int},

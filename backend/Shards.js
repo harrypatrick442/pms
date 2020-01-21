@@ -16,7 +16,7 @@ module.exports = new(function(){
 	const PmsShardBuilder= require('./PmsShardBuilder');
 	const Shard = require('./Shard');
 	const PmsLog = require('./PmsLog');
-	var shards, shardsCreator, sendToDevices, createNextShardsLifespan, shardHosts, mapIdToShard=new Map();
+	var shards, shardsCreator, sendToDevices, createNextShardsLifespan, shardHosts, mapIdToShard=new Map(), overflow, databaseType;
 	this.initialize = initialize;
 	this.getShardForUserIds=function(userId1In, userId2In){
 		return new Promise((resolve, reject)=>{
@@ -46,6 +46,10 @@ module.exports = new(function(){
 			if(initialized)throw new Error('Already initialized');
 			const databaseConfiguration=params.databaseConfiguration;
 			sendToDevices = params.sendToDevices;
+			overflow = params.overflow;
+			databaseType = params.databaseType;
+			if(!overflow)throw new Error('No overflow provided');
+			if(!databaseType)throw new Error('No databaseType provied');
 			console.log(sendToDevices);
 			DalPms.initialize(databaseConfiguration);
 			Settings.get().then((settings)=>{
@@ -221,7 +225,9 @@ module.exports = new(function(){
 					userIdToExclusive:userIdToExclusive,
 					userIdFromInclusive:userIdFromInclusive,
 					sendToDevices:sendToDevices,
-					shardHost:shardHost
+					shardHost:shardHost,
+					overflow:overflow,
+					databaseType:databaseType
 				}).then((shard)=>{
 					DalPms.addShard(shard).then(()=>{
 						addShard(shard);
