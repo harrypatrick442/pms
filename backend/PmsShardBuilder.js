@@ -20,7 +20,7 @@ module.exports = new (function(params){
 	PMS_SHARD_PMS_GET_UPDATE=PMS_SHARD_STORED_PROCEDURES+'pms_shard_pms_get_update.sql',
 	MYSQL_PMS_SHARD_PMS_GET=MYSQL_PMS_SHARD_STORED_PROCEDURES+'pms_shard_pms_get.sql',
 	MYSQL_PMS_SHARD_PMS_USER_STATE_SET=MYSQL_PMS_SHARD_STORED_PROCEDURES+'pms_shard_pms_user_state_set.sql',
-	PMS_SHARD_PMS_USER_STATE_SET=PMS_SHARD_STORED_PROCEDURE+'pms_shard_pms_user_state_set.sql',
+	PMS_SHARD_PMS_USER_STATE_SET=PMS_SHARD_STORED_PROCEDURES+'pms_shard_pms_user_state_set.sql',
 	PMS_SHARD_UPDATE =PMS_SHARD_STORED_PROCEDURES+'pms_shard_update.sql',
 	PMS_SHARD_TBLPMS_TABLENAMES_GET_BY_DATE_RANGE=PMS_SHARD_SCALAR_FUNCTIONS+'pms_shard_tblPms_tableNames_get_by_date_range.sql',
 	PMS_SHARD_TBLPMS_TABLENAME_LATEST_GET=PMS_SHARD_SCALAR_FUNCTIONS+'pms_shard_tblPms_tableName_latest_get.sql',
@@ -31,7 +31,7 @@ module.exports = new (function(params){
 		,PMS_SHARD_TBLPMS_TABLENAME_LATEST_GET,PMS_SHARD_PMS_TBLPMSX_SELECT_GET,PMS_SHARD_PMS_USER_STATE_SET
 	];
 	const programmablePathsMysqlOverflowing = [
-		MYSQL_PMS_SHARD_PMS_GET,MYSQL_PMS_SHARD_PMS_USER_STATE_SETss
+		MYSQL_PMS_SHARD_PMS_GET,MYSQL_PMS_SHARD_PMS_USER_STATE_SET
 	];
 	const tblHorizontalPartitions= new Table({
 		name:'tblHorizontalPartitions',

@@ -1,7 +1,8 @@
 const Accumulator = require('./Accumulator');
 const Settings = require('./Settings');
 const ShardHostHelper = require('./ShardHostHelper');
-const DalPmsShard = require('./DalPmsShard');
+const DalPmsShardSql = require('./DalPmsShardSql');
+const DalPmsShardMysql = require('./DalPmsShardMysql');
 const DatabaseConfiguration= require('configuration').DatabaseConfiguration;
 function Shard(params){
 	const userIdToExclusive = params.userIdToExclusive;
