@@ -25,7 +25,7 @@ module.exports = function(configuration){
 		dal.query({storedProcedure:STORED_PROCEDURE_USER_STATE_SET,
 			parameters:[
 				{name:USER_ID, value:userId, type:sql.Int},
-				{name:OPENS, value:getUserStateOpens(userState)}
+				{name:OPENS, value:createTableUserStateOpens(userState)}
 			]
 		});
 	};
@@ -46,7 +46,7 @@ module.exports = function(configuration){
 			}).catch(reject);
 		});
 	};
-	function getUserStateOpens(userState){
+	function createTableUserStateOpens(userState){
 		const OTHER_USER_ID='otherUserId',EXPANDED='expanded';
 		var table = new sql.Table();
 		table.columns.add(OTHER_USER_ID,sql.Int);
@@ -54,5 +54,6 @@ module.exports = function(configuration){
 		userState[S.OPENS].forEach((open)=>{
 			table.rows.add(open[S.USER_ID], open[S.EXPANDED]);
 		});
-	}
+		return table;
+	}sss
 };
