@@ -6,6 +6,7 @@ const RepositoriesHelper= require('repositories_helper');module.exports={
 	getScriptsAbsolutePath:RepositoriesHelper.getGetScriptsAbsolutePath(),
 	getStylesRelativePath:RepositoriesHelper.getGetStylesRelativePath(),
 	getStylesAbsolutePath:RepositoriesHelper.getGetStylesAbsolutePath(),
+	get ScriptsCatalogue(){ return require('./frontend/catalogues/ScriptsCatalogue');},
 	initialize : function(params){
 		return getPms().initialize(params);
 	}
