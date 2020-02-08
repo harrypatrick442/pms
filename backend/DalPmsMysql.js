@@ -13,18 +13,6 @@ module.exports = new(function(){
 	this.initialize = function(configuration){
 		dalMysql = new Mysql(configuration);
 	};
-	this.addShard = function(shard){
-		return new Promise((resolve, reject)=>{
-			dalMysql.call({
-				storedProcedure:STORED_PROCEDURE_SHARD_ADD,
-				parameters:[shard.getHostId(), shard.getName(), shard.getUserIdFromInclusive(), shard.getUserIdToExclusive()]
-			}).then(function(result){
-				console.log(result);
-				shard.setId(result.returnValue);
-				resolve(shard);
-			}).catch(reject);
-		});
-	};
 	this.getSettings = function(){
 		return new Promise((resolve, reject)=>{
 			dalMysql.call({storedProcedure:STORED_PROCEDURE_SETTINGS_GET

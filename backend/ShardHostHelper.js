@@ -17,7 +17,7 @@ module.exports = function(dalPms){
 				resolve(_shardHosts);
 				return;
 			}
-			dalPms.getShardHosts().then((shardHosts)=>{
+			DalShards.getShardHosts(ShardTypes.PMS).then((shardHosts)=>{
 				_mapIdToShardHost = shardHosts.toMap(shardHost=>shardHost.getHostId(), shardHost=>shardHost);
 				_shardHosts = shardHosts;
 				resolve(shardHosts);
