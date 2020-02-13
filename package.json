@@ -8,6 +8,7 @@
 		"client": "^1.0.0",
 		"core": "^1.0.0",
 		"dal": "^1.0.0",
+		"enums": "^1.0.0",
 		"hosts": "^1.0.0",
 		"interserver_communication": "^1.0.0",
 		"log": "^1.0.0",

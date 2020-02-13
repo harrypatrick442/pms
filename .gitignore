@@ -16,3 +16,5 @@ node_modules/strings
 backend/node_modules/strings
 backend/node_modules
 node_modules
+node_modules/enums
+backend/node_modules/enums

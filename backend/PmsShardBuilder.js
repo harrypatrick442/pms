@@ -3,6 +3,7 @@ module.exports = new (function(params){
 	const PmsLog = require('./PmsLog');
 	const Dal = require('dal');
 	const {DalDatabases, ShardBuilder, Table, TableColumn, TableColumnTypes} = Dal;
+	const DatabaseTypes = require('enums').DatabaseTypes;
 	const Core = require('core');
 	const Iterator = Core.Iterator;
 	const Shard= require('./Shard');

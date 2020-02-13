@@ -18,7 +18,8 @@ module.exports = new(function(){
 	const Shard = require('./Shard');
 	const PmsLog = require('./PmsLog');
 	const Dal = require('dal');
-	const DatabaseTypes = Dal.DatabaseTypes;
+	const {DatabaseTypes }= require('enums');
+	
 	const checkParamsConfiguration = require('./checkParamsConfiguration');
 	var settings, shards, shardsCreator, sendToDevices, createNextShardsLifespan, shardHosts, mapIdToShard=new Map(), overflow, databaseType, DalPms, shardHostHelper;
 	this.initialize = initialize;

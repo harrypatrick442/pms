@@ -3,6 +3,7 @@ const Settings = require('./Settings');
 const DalPmsShardSql = require('./DalPmsShardSql');
 const DalPmsShardMysql = require('./DalPmsShardMysql');
 const DatabaseConfiguration= require('configuration').DatabaseConfiguration;
+const {DatabaseTypes}=require('enums');
 function Shard(params){
 	const userIdToExclusive = params.userIdToExclusive;
 	const userIdFromInclusive = params.userIdFromInclusive;

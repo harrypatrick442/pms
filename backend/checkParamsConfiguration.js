@@ -1,4 +1,4 @@
-const {DatabaseTypes} = require('dal');
+const {DatabaseTypes} = require('enums');
 module.exports = function(params){
 	var overflowing = params.overflowing;
 	var databaseType = params.databaseType;
